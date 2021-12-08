@@ -80,9 +80,9 @@ the necessary installation instructions if necessary.
 
 ### Switching to an alternative build tool, like podman, from docker
 
-Export the full path to the alternative tool as the `CONFLUENT_CP_IMAGES_BUILD_TOOL` before running `make`.
+Export the full path to the alternative tool as the `IMAGES_BUILD_TOOL` before running `make`.
 
-    $ export CONFLUENT_CP_IMAGES_BUILD_TOOL=/opt/homebrew/bin/podman
+    $ export IMAGES_BUILD_TOOL=/opt/homebrew/bin/podman
     $ make
 
 This will be picked up by the Makefile as an argument. It will then be
@@ -110,7 +110,7 @@ will start one for you.
 Tests are run with [bats](https://github.com/sstephenson/bats), and
 exec to get into a container to test for the existence of things. They
 can be quite slow to execute. You can skip tests in make devel by
-setting `CONFLUENT_CP_IMAGES_DEVEL_SKIP_TESTS` to `true`.
+setting `DEVEL_SKIP_TESTS` to `true`.
 
 #### ADDITIONAL CUSTOMIZATION
 
@@ -118,7 +118,7 @@ setting `CONFLUENT_CP_IMAGES_DEVEL_SKIP_TESTS` to `true`.
 possible. `make devel` will run the installation for bats on osx using
 homebrew. You can change how `bats` is installed by providing a
 different bats installation script in the
-`CONFLUENT_CP_IMAGES_DEVEL_BATS_INSTALL_SCRIPT_LOCATION` environment
+`BATS_INSTALL_SCRIPT_LOCATION` environment
 variable. The defalut behavior is to see if bats is available on the
 system before installing and installing with `homebrew`.
 
