@@ -122,6 +122,13 @@ different bats installation script in the
 variable. The defalut behavior is to see if bats is available on the
 system before installing and installing with `homebrew`.
 
+### CUSTOMIZATION using `.local.make`
+
+You can override the variables defined in the `Makefile` by creating
+the git ignored file `.local.make` in the top level directory of this
+repo, rather than using environment variables. This file is ignored by
+git so allows you to set things only for your local builds.
+
 ## VERSIONING
 
 If possible, all versions will follow the Confluent CP platform versions.

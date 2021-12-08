@@ -34,15 +34,15 @@ color_string(){
 
 log_info(){
     local message=${@}
-    echo -e "${color_blue}${message}"
+    echo -e "${color_blue}${message}${color_none}"
 }
 
 log_success(){
     local message=${@}
-    echo -e "${color_green}${message}"
+    echo -e "${color_green}${message}${color_none}"
 }
 
 log_error(){
     local message=${@}
-    echo -e "${color_red}${message}"
+    echo -e "${color_red}${message}${color_none}"
 }
