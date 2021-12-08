@@ -97,27 +97,9 @@ To create cross-platform docker images, this project does not use
 tagged with the architecture version so that a manifest add command
 can pull the manifest and add it to the cross-platform manifest at the
 proper tag. As such, you will want to have a local repository
-available for development. I use
-[Artifactory](https://www.jfrog.com/confluence/display/RTF6X/Installing+with+Docker#InstallingwithDocker-UsingDockerCompose)
-in a podman pod, converting the docker-compose file to kubernetes
-deployment yamls, and then combining them into a single pod deployment
-to run with `podman play kube artifactory-deployment`. The
-docker-compose.yaml and the artifactory-deployment.yaml are present in
-`./devel/artifactory`, along with corresponding
-`./start-artifactory-podman.sh` and `./start-artifactory-docker.sh`
-scripts. You may set the environment variable
-`CONFLUENT_CP_IMAGES_DEVEL_DOCKER_REPOSITORY_DEPLOYMENT` to `COMPOSE`
-or `KUBE` when running `make devel-local-repository` to use these
-differing deployment strategies for a local docker repository. This
-will *NOT* set up a registry in artifactory for you. You will have to
-follow the
-[instructions](https://www.jfrog.com/confluence/display/RTF6X/Getting+Started+with+Artifactory+as+a+Docker+Registry#GettingStartedwithArtifactoryasaDockerRegistry-UsingDockerCompose-1MinuteSetup.1)
-pointing at your local instance to set one
-up. `make-devel-local-repository` will use the artifactory rest api to
-create one for you (by submitting the one that I have created and then
-fetched using GET). If you already have one running, then you may pass
-it as the environment variable `CONFLUENT_CP_IMAGES_REPOSITORY` before
-running `make devel`.
+available for use during development. I use [the open source docker
+registry](https://docs.docker.com/registry/deploying/). `make-devel-local-registry`
+will start one for you.
 
 ### BUILDING LOCALLY
 
