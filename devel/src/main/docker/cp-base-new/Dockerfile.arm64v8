@@ -1,3 +1,0 @@
-FROM openjdk:11.0.13-slim-bullseye
-
-CMD ["echo" "built!"]

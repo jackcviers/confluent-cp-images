@@ -10,11 +10,13 @@ install_bats(){
     if ! command -v "bats" &> /dev/null;
     then
 	log_error "bats not found. Installing bats..."
-	brew install bats-core
+	brew tap kaos/shell
+	brew install bats-assert
+	brew install bats-file
 	log_success "bats installation complete."
     else
 	log_success "bats already installed."
-    fi
+    fi	
 }
 
 install_bats

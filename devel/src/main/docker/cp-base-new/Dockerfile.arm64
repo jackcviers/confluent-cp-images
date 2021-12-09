@@ -1,0 +1,14 @@
+FROM openjdk:11.0.13-slim-bullseye
+
+ARG VERSION
+ARG ARCH
+
+LABEL maintainer="jackcviers@gmail.com"
+LABEL version=$VERSION
+LABEL name="cp-base"
+LABEL summary="Common base image for Confluent Components' Docker images."
+
+ENV LANG="C.UTF-8"
+ENV CUB_CLASSPATH='"/usr/share/java/cp-base-new/*"'
+
+CMD ["echo" "built!"]
