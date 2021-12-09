@@ -101,9 +101,13 @@ available for use during development. I use [the open source docker
 registry](https://docs.docker.com/registry/deploying/). `make-devel-local-registry`
 will start one for you.
 
+If you are running outside of docker-desktop docker, you will also
+need to enable cross-platform capabilities on the virtual machine
+providing docker capability (https://edofic.com/posts/2021-09-12-podman-m1-amd64/).
+
 ### BUILDING LOCALLY
 
-    $ make devel
+    $ make make-devel
 
 ### TESTS
 
