@@ -32,3 +32,8 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} which tar
     assert_output --partial "/bin/tar"
 }
+
+@test "propcs should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l procps
+    assert_output --partial "ii  procps"
+}
