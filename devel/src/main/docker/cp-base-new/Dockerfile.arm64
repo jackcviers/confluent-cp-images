@@ -12,8 +12,9 @@ ENV LANG="C.UTF-8"
 ENV CUB_CLASSPATH='"/usr/share/java/cp-base-new/*"'
 
 RUN apt update \
-    && apt install -y \
-    wget \
-    nmap
+	&& apt install -y \
+	wget \
+	nmap \
+	ncat
 
 CMD ["echo" "built!"]

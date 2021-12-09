@@ -17,3 +17,8 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} which nmap
     assert_output --partial "/usr/bin/nmap"
 }
+
+@test "ncat should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} which ncat
+    assert_output --partial "/usr/bin/ncat"
+}
