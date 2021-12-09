@@ -27,3 +27,8 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} python3 --version
     assert_output --partial "3.9.2"
 }
+
+@test "tar should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} which tar
+    assert_output --partial "/bin/tar"
+}
