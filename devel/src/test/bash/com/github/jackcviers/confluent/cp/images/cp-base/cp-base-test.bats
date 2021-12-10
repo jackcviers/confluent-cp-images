@@ -75,3 +75,8 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} python --version
     assert_output --partial "Python 3."
 }
+
+@test "pip version should be 21.*" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} pip -V
+    assert_output --partial "21."
+}

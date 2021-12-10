@@ -26,6 +26,7 @@ RUN apt update \
 	iputils-clockdiff \
 	iputils-arping \
 	python3-pip \
-	&& update-alternatives --install /usr/bin/python python /usr/bin/python3 99
+	&& update-alternatives --install /usr/bin/python python /usr/bin/python3 99 \
+	&& python3 -m pip install --upgrade "pip>=21,<22"
 
 CMD ["echo" "built!"]
