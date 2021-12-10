@@ -81,12 +81,14 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     assert_output --partial "21."
 }
 
-@test "git should be installed" {
-    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l git
-    assert_output --partial "ii  git"
-}
-
 @test "confluent-docker-utils should be installed" {
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} pip show confluent-docker-utils
     assert_output --partial "Version: 0.0.49"
 }
+
+@test "git should not be installed after installing confluent-docker-utils" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l git
+    refute_output --partial "ii  git"
+}
+
+
