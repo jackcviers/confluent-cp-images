@@ -25,7 +25,8 @@ RUN apt update \
 	iputils-ping \
 	iputils-clockdiff \
 	iputils-arping \
-	python3-pip \
+	python3-pip \	
+	git \
 	&& update-alternatives --install /usr/bin/python python /usr/bin/python3 99 \
 	&& python3 -m pip install --upgrade "pip>=21,<22"
 

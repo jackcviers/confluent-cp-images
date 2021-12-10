@@ -80,3 +80,8 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} pip -V
     assert_output --partial "21."
 }
+
+@test "git should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l git
+    assert_output --partial "ii  git"
+}

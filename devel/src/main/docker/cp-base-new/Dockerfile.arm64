@@ -2,6 +2,7 @@ FROM openjdk:11.0.13-slim-bullseye
 
 ARG VERSION
 ARG ARCH
+# ARG PYTHON_CONFLUENT_DOCKER_UTILS_INSTALL_SPEC="git+https://github.com/confluentinc/confluent-docker-utils@v0.0.49"
 
 LABEL maintainer="jackcviers@gmail.com"
 LABEL version=$VERSION
@@ -24,8 +25,9 @@ RUN apt update \
 	iputils-ping \
 	iputils-clockdiff \
 	iputils-arping \
-	python3-pip \
+	python3-pip \	
+	git \
 	&& update-alternatives --install /usr/bin/python python /usr/bin/python3 99 \
-	&& python3 -m pip install --upgrade "pip>=21,<22"
+	&& python3 -m pip install --upgrade "pip>=21,<22" 
 
 CMD ["echo" "built!"]
