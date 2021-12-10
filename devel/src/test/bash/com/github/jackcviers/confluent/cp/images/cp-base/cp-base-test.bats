@@ -37,3 +37,8 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l procps
     assert_output --partial "ii  procps"
 }
+
+@test "kerberos should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l krb5-user
+    assert_output --partial "ii  krb5-user"
+}

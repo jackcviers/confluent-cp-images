@@ -18,6 +18,7 @@ RUN apt update \
 	nmap \
 	ncat \
 	python3 \
-	procps
+	procps \
+	krb5-user
 
 CMD ["echo" "built!"]
