@@ -53,3 +53,8 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l iputils-tracepath
     assert_output --partial "ii  iputils-tracepath"
 }
+
+@test "hostname should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l hostname
+    assert_output --partial "ii  hostname"
+}
