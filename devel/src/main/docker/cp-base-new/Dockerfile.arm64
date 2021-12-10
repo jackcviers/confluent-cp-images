@@ -10,6 +10,7 @@ LABEL summary="Common base image for Confluent Components' Docker images."
 
 ENV LANG="C.UTF-8"
 ENV CUB_CLASSPATH='"/usr/share/java/cp-base-new/*"'
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update \
 	&& apt install -y \
@@ -22,6 +23,7 @@ RUN apt update \
 	iputils-tracepath \
 	iputils-ping \
 	iputils-clockdiff \
-	iputils-arping
+	iputils-arping \
+	python3-pip
 
 CMD ["echo" "built!"]

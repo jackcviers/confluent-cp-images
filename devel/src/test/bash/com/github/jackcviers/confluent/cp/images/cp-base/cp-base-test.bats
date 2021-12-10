@@ -58,9 +58,20 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l hostname
     assert_output --partial "ii  hostname"
 }
+
 @test "java should be java 11" {
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} java -version
     assert_output --partial "openjdk version \"11."
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} javac -version
     assert_output --partial "javac 11."
 }
+
+@test "pip3 should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l python3-pip
+    assert_output --partial "ii  python3-pip"
+}
+
+# @test "python command should be python3" {
+#     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} python --version
+#     assert_output --partial "Python 3."
+# }
