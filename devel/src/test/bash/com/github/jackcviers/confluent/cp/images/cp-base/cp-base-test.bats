@@ -58,3 +58,9 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l hostname
     assert_output --partial "ii  hostname"
 }
+@test "java should be java 11" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} java -version
+    assert_output --partial "openjdk version \"11."
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} javac -version
+    assert_output --partial "javac 11."
+}
