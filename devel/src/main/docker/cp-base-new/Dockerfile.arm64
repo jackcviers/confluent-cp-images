@@ -18,6 +18,10 @@ RUN apt update \
 	ncat \
 	python3 \
 	procps \
-	krb5-user
+	krb5-user \
+	iputils-tracepath \
+	iputils-ping \
+	iputils-clockdiff \
+	iputils-arping
 
 CMD ["echo" "built!"]

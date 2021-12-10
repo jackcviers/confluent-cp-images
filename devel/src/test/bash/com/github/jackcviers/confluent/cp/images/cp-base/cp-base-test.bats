@@ -42,3 +42,14 @@ load '/opt/homebrew/lib/bats-assert/load.bash'
     run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l krb5-user
     assert_output --partial "ii  krb5-user"
 }
+
+@test "iputils should be installed" {
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l iputils-arping
+    assert_output --partial "ii  iputils-arping"
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l iputils-clockdiff
+    assert_output --partial "ii  iputils-clockdiff"
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l iputils-ping
+    assert_output --partial "ii  iputils-ping"
+    run $BATS_BUILD_TOOL run -it --rm --arch=$ARCH ${BATS_IMAGE} dpkg -l iputils-tracepath
+    assert_output --partial "ii  iputils-tracepath"
+}
