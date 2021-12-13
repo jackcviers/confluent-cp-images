@@ -200,3 +200,13 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/disk-usage-agent-7.0.0.jar
     assert_output --partial "appuser"
 }
+
+@test "/usr/share/java/cp-base-new/gson-2.8.6.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/gson-2.8.6.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/gson-2.8.6.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/gson-2.8.6.jar
+    assert_output --partial "appuser"
+}

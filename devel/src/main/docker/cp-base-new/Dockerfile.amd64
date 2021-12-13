@@ -50,4 +50,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/io/confluent/confluen
 
 ADD --chown=appuser:appuser https://packages.confluent.io/maven/io/confluent/disk-usage-agent/7.0.0/disk-usage-agent-7.0.0.jar /usr/share/java/cp-base-new/disk-usage-agent-7.0.0.jar
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar /usr/share/java/cp-base-new/gson-2.8.6.jar
+
 CMD ["echo" "built!"]
