@@ -53,4 +53,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/google/code/gson/
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.12.3/jackson-annotations-2.12.3.jar /usr/share/java/cp-base-new/jackson-annotations-2.12.3.jar
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.12.3/jackson-core-2.12.3.jar /usr/share/java/cp-base-new/jackson-core-2.12.3.jar
+
 CMD ["echo" "built!"]
