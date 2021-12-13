@@ -51,4 +51,6 @@ ADD --chown=appuser:appuser https://packages.confluent.io/maven/io/confluent/dis
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar /usr/share/java/cp-base-new/gson-2.8.6.jar
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.12.3/jackson-annotations-2.12.3.jar /usr/share/java/cp-base-new/jackson-annotations-2.12.3.jar
+
 CMD ["echo" "built!"]
