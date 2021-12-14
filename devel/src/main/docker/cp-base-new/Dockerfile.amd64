@@ -68,4 +68,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/fasterxml/jackson
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/jolokia/jolokia-core/1.6.2/jolokia-core-1.6.2.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
