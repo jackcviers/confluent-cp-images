@@ -264,3 +264,12 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/jackson-datatype-jdk8-2.12.3.jar
     assert_output --partial "appuser"
 }
+@test "/usr/share/java/cp-base-new/jackson-module-scala_2.13-2.12.3.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/jackson-module-scala_2.13-2.12.3.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/jackson-module-scala_2.13-2.12.3.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/jackson-module-scala_2.13-2.12.3.jar
+    assert_output --partial "appuser"
+}
