@@ -76,4 +76,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/net/sf/jopt-simple/jo
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://packages.confluent.io/maven/org/apache/kafka/kafka-clients/7.0.0-ccs/kafka-clients-7.0.0-ccs.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
