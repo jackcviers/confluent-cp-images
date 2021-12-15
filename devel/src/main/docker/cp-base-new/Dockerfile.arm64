@@ -93,6 +93,8 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/lz4/lz4-java/1.7.
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/yammer/metrics/metrics-core/2.2.0/metrics-core-2.2.0.jar /usr/share/java/cp-base-new/
 
-ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/yammer/metrics/metrics-core/2.2.0/metrics-core-4.1.12.1.jar /usr/share/java/cp-base-new/
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1.jar /usr/share/java/cp-base-new/
+
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar /usr/share/java/cp-base-new/
 
 CMD ["echo" "built!"]

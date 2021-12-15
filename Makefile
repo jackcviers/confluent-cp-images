@@ -32,13 +32,13 @@ test-base-arm64:
 	ARCH=arm64
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
 	BATS_IMAGE=localhost/jackcviers/cp-base-new:${VERSION}.arm64 \
-	bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
+	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
 
 test-base-amd64:
 	ARCH=amd64
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
 	BATS_IMAGE=localhost/jackcviers/cp-base-new:${VERSION}.amd64 \
-	bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
+	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
 
 test-base: test-base-arm64 test-base-amd64
 

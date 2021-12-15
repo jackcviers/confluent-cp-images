@@ -3,14 +3,22 @@
 load '/opt/homebrew/lib/bats-support/load.bash'
 load '/opt/homebrew/lib/bats-assert/load.bash'
 
+setup(){
+    while [ ! "$($BATS_TEST_TOOL ps -a | grep cp-base-test-${ARCH})" ]; do
+	sleep 1
+    done
+}
 
 setup_file(){
     run $BATS_BUILD_TOOL run -d -t --arch=$ARCH --name cp-base-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
 }
 
 teardown_file(){
-    run $BATS_BUILD_TOOL kill cp-base-test-${ARCH}
-    run $BATS_BUILD_TOOL container rm cp-base-test-${ARCH}
+    container=cp-base-test-${ARCH}
+    run sleep 1
+    run $BATS_BUILD_TOOL stop ${container}
+    run $BATS_BUILD_TOOL container rm ${container}
+    run $BATS_BUILD_TOOL container rm ${container}
 }
 
 @test "openssl should be installed" {
@@ -408,6 +416,15 @@ teardown_file(){
 
 @test "/usr/share/java/cp-base-new/metrics-core-4.1.12.1.jar should be owned by appuser" {
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/metrics-core-4.1.12.1.jar
+    assert_output --partial "appuser"
+}
+@test "/usr/share/java/cp-base-new/paranamer-2.8.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/paranamer-2.8.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/paranamer-2.8.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/paranamer-2.8.jar
     assert_output --partial "appuser"
 }
 
