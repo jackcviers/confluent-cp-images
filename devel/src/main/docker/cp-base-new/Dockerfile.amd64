@@ -80,4 +80,6 @@ ADD --chown=appuser:appuser https://packages.confluent.io/maven/org/apache/kafka
 
 ADD --chown=appuser:appuser https://packages.confluent.io/maven/org/apache/kafka/kafka-metadata/7.0.0-ccs/kafka-metadata-7.0.0-ccs.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://packages.confluent.io/maven/org/apache/kafka/kafka-raft/7.0.0-ccs/kafka-raft-7.0.0-ccs.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
