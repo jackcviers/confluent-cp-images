@@ -318,6 +318,7 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/json-simple-1.1.1.jar
     assert_output --partial "appuser"
 }
+
 @test "/usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar should exist" {
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar
     assert_success
@@ -325,5 +326,14 @@ teardown_file(){
 
 @test "/usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar should be owned by appuser" {
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar
+    assert_output --partial "appuser"
+}
+@test "/usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar
     assert_output --partial "appuser"
 }
