@@ -382,3 +382,17 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar
     assert_output --partial "appuser"
 }
+@test "/usr/share/java/cp-base-new/lz4-java-1.7.1.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/lz4-java-1.7.1.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/lz4-java-1.7.1.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/lz4-java-1.7.1.jar
+    assert_output --partial "appuser"
+}
+
+@test "wait for multijob" {
+    run echo "woot"
+    assert_success
+}
