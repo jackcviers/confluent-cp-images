@@ -373,3 +373,12 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-storage-api-7.0.0-ccs.jar
     assert_output --partial "appuser"
 }
+@test "/usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar
+    assert_output --partial "appuser"
+}

@@ -87,4 +87,6 @@ ADD --chown=appuser:appuser https://packages.confluent.io/maven/org/apache/kafka
 
 ADD --chown=appuser:appuser https://packages.confluent.io/maven/org/apache/kafka/kafka-storage-api/7.0.0-ccs/kafka-storage-api-7.0.0-ccs.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://packages.confluent.io/maven/org/apache/kafka/kafka_2.13/7.0.0-ccs/kafka_2.13-7.0.0-ccs.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
