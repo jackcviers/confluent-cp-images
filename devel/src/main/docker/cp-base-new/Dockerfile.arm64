@@ -105,4 +105,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/scala-lang/scala-
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/typesafe/scala-logging/scala-logging_2.13/3.9.3/scala-logging_2.13-3.9.3.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.5/scala-reflect-2.13.5.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
