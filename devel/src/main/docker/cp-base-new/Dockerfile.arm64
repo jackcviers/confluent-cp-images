@@ -101,4 +101,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/scala-lang/module
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.13/1.0.0/scala-java8-compat_2.13-1.0.0.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.5/scala-library-2.13.5.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
