@@ -109,4 +109,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/scala-lang/scala-
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
