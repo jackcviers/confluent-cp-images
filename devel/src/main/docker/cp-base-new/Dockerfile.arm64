@@ -113,4 +113,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/slf4j/slf4j-simpl
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.27/snakeyaml-1.27.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.1.8.1/snappy-java-1.1.8.1.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
