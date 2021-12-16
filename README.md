@@ -76,6 +76,15 @@ the necessary installation instructions if necessary.
 5. brew (for bats installation on OSX). You may override the
    installation script for bats to not use homebrew. See `ADDITIONAL
    CUSTOMIZATION` below.
+6. If you are planning on using podman, you will need to execute the following steps on the podman machine:
+
+    ```shell
+    podman machine init
+    podman machine ssh
+    sudo -i
+    rpm-ostree install qemu-user-static
+    systemctl reboot
+    ```
 
 
 ### Switching to an alternative build tool, like podman, from docker
