@@ -119,4 +119,6 @@ ADD --chown=appuser:appuser https://packages.confluent.io/maven/io/confluent/uti
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.6.3/zookeeper-3.6.3.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.6.3/zookeeper-jute-3.6.3.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
