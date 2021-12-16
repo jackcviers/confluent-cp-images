@@ -545,6 +545,24 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar
     assert_output --partial "appuser"
 }
+@test "/etc/confluent/docker/bash-config should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /etc/confluent/docker/bash-config
+    assert_success
+}
+
+@test "/etc/confluent/docker/bash-config should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /etc/confluent/docker/bash-config
+    assert_output --partial "appuser"
+}
+@test "/etc/confluent/docker/mesos-setup.sh should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /etc/confluent/docker/mesos-setup.sh
+    assert_success
+}
+
+@test "/etc/confluent/docker/mesos-setup.sh should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /etc/confluent/docker/mesos-setup.sh
+    assert_output --partial "appuser"
+}
 
 @test "wait for multijob" {
     run echo "woot"

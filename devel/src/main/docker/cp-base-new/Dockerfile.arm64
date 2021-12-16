@@ -123,4 +123,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/apache/zookeeper/
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.0-2/zstd-jni-1.5.0-2-linux_arm.jar /usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar
 
+COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
+
 CMD ["echo" "built!"]
