@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
-load '/opt/homebrew/lib/bats-support/load.bash'
-load '/opt/homebrew/lib/bats-assert/load.bash'
+load '${BATS_LIBS_INSTALL_LOCATION}/bats-support/load.bash'
+load '${BATS_LIBS_INSTALL_LOCATION}/bats-assert/load.bash'
 
 setup(){
     while [ ! "$($BATS_TEST_TOOL ps -a | grep cp-base-test-${ARCH})" ]; do

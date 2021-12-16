@@ -5,17 +5,19 @@ SHELL := /bin/bash
 
 BATS_INSTALL_SCRIPT_LOCATION ?= "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats.sh"
 
+BATS_LIBS_INSTALL_LOCATION ?= /opt/homebrew/lib/
+
 CONFLUENT_MAJOR_VERSION ?= 7
 CONFLUENT_MINOR_VERSION ?= 0
 CONFLUENT_PATCH_VERSION ?= 0
 
 VERSION=${CONFLUENT_MAJOR_VERSION}.${CONFLUENT_MINOR_VERSION}.${CONFLUENT_PATCH_VERSION}
 
-IMAGES_BUILD_TOOL=podman
+IMAGES_BUILD_TOOL ?= podman
 
 .ONESHELL:
 install-bats:
-	$(BATS_INSTALL_SCRIPT_LOCATION)
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} $(BATS_INSTALL_SCRIPT_LOCATION)
 
 build-base-arm64:
 	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
