@@ -436,6 +436,15 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/scala-collection-compat_2.13-2.4.4.jar
     assert_output --partial "appuser"
 }
+@test "/usr/share/java/cp-base-new/scala-java8-compat_2.13-1.0.0.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/scala-java8-compat_2.13-1.0.0.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/scala-java8-compat_2.13-1.0.0.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/scala-java8-compat_2.13-1.0.0.jar
+    assert_output --partial "appuser"
+}
 
 @test "wait for multijob" {
     run echo "woot"
