@@ -574,6 +574,25 @@ teardown_file(){
     assert_output --partial "/home/appuser"
 }
 
+@test "/usr/local/bin/dub should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/local/bin/dub
+    assert_success
+}
+
+@test "/usr/local/bin/cub should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/local/bin/cub
+    assert_success
+}
+
+@test "bash -c '/usr/local/bin/dub --help' should output Docker Utility Belt" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} bash -c '/usr/local/bin/dub --help'
+    assert_output --partial "Docker Utility Belt"
+}
+@test "bash -c '/usr/local/bin/cub --help' should output Docker Utility Belt" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} bash -c '/usr/local/bin/cub --help'
+    assert_output --partial "Confluent Platform Utility Belt"
+}
+
 @test "wait for multijob" {
     run echo "woot"
     assert_success
