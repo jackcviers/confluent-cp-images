@@ -126,4 +126,7 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/github/luben/zstd
 
 COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
 
+USER appuser
+WORKDIR /home/appuser
+
 CMD ["echo" "built!"]

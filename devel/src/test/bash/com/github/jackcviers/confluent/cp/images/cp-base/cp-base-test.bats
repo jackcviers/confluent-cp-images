@@ -564,6 +564,16 @@ teardown_file(){
     assert_output --partial "appuser"
 }
 
+@test "whoami should be appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} whoami
+    assert_output --partial "appuser"
+}
+
+@test "pwd should be /home/appuser/" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} pwd
+    assert_output --partial "/home/appuser"
+}
+
 @test "wait for multijob" {
     run echo "woot"
     assert_success
