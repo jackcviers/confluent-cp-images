@@ -115,4 +115,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.1.8.1/snappy-java-1.1.8.1.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://packages.confluent.io/maven/io/confluent/utility-belt/7.0.0/utility-belt-7.0.0.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
