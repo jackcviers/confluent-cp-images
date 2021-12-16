@@ -15,7 +15,7 @@ install_bats(){
 	cd ./.bats-install
 	git clone https://github.com/bats-core/bats-core.git
 	cd bats-core
-	sudo ./install.sh /usr/local/bin/
+	sudo ./install.sh /usr/local/
 	cd -
 	git clone https://github.com/bats-core/bats-support.git \
 	     --depth=1 \

@@ -85,7 +85,11 @@ the necessary installation instructions if necessary.
     rpm-ostree install qemu-user-static
     systemctl reboot
     ```
+7. If building with podman on qemu on linux, you will need to install https://github.com/containers/gvisor-tap-vsock.git . Clone the repository and call make. Then link gvproxy in the bin directory to `/usr/local/lib/podman` like this:
 
+   ```shell
+   ln -s <gvisor-tap-vsock-clone-dir>/bin/gvproxy /usr/local/lib/podman/gvproxy
+   ```
 
 ### Switching to an alternative build tool, like podman, from docker
 
@@ -145,3 +149,7 @@ git so allows you to set things only for your local builds.
 ## VERSIONING
 
 If possible, all versions will follow the Confluent CP platform versions.
+
+
+### NOTES
+sudo apt install qemu-block-extra qemu-efi qemu-efi-aarch64 qemu-efi-arm qemu-guest-agent qemu-kvm qemu-slof qemu-system qemu-system-arm qemu-system-common qemu-system-data qemu-system-gui qemu-system-mips qemu-system-misc qemu-system-x86 qemu-system-x86-microvm qemu-user qemu-user-binfmt qemubuilder
