@@ -536,6 +536,15 @@ teardown_file(){
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/zookeeper-jute-3.6.3.jar
     assert_output --partial "appuser"
 }
+@test "/usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar should exist" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar should be owned by appuser" {
+    run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar
+    assert_output --partial "appuser"
+}
 
 @test "wait for multijob" {
     run echo "woot"
