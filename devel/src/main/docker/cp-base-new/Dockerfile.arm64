@@ -97,4 +97,6 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/io/dropwizard/metrics
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar /usr/share/java/cp-base-new/
 
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/org/scala-lang/modules/scala-collection-compat_2.13/2.4.4/scala-collection-compat_2.13-2.4.4.jar /usr/share/java/cp-base-new/
+
 CMD ["echo" "built!"]
