@@ -1,24 +1,32 @@
 #!/usr/bin/env bats
 
-load '${BATS_LIBS_INSTALL_LOCATION}/bats-support/load.bash'
-load '${BATS_LIBS_INSTALL_LOCATION}/bats-assert/load.bash'
+# Copyright 2021 Jack Viers
 
-setup(){
-    while [ ! "$($BATS_TEST_TOOL ps -a | grep cp-base-test-${ARCH})" ]; do
-	sleep 1
-    done
-}
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load "${BATS_LIBS_INSTALL_LOCATION}/bats-support/load.bash"
+load "${BATS_LIBS_INSTALL_LOCATION}/bats-assert/load.bash"
 
 setup_file(){
-    run $BATS_BUILD_TOOL run -d -t --arch=$ARCH --name cp-base-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
+     echo "BATS_BUILD_TOOL: $BATS_BUILD_TOOL"
+     $BATS_BUILD_TOOL run -d -t --arch=$ARCH --name cp-base-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
 }
 
 teardown_file(){
     container=cp-base-test-${ARCH}
-    run sleep 1
-    run $BATS_BUILD_TOOL stop ${container}
-    run $BATS_BUILD_TOOL container rm ${container}
-    run $BATS_BUILD_TOOL container rm ${container}
+    sleep 1
+    $BATS_BUILD_TOOL stop ${container}
+    $BATS_BUILD_TOOL container rm ${container}
 }
 
 @test "openssl should be installed" {
@@ -591,9 +599,4 @@ teardown_file(){
 @test "bash -c '/usr/local/bin/cub --help' should output Docker Utility Belt" {
     run $BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} bash -c '/usr/local/bin/cub --help'
     assert_output --partial "Confluent Platform Utility Belt"
-}
-
-@test "wait for multijob" {
-    run echo "woot"
-    assert_success
 }

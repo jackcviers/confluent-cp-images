@@ -67,16 +67,10 @@ the necessary installation instructions if necessary.
 
 ### Prerequisites
 
-1. Docker-compatible client/container engine, such as [podman](https://podman.io/).
-2. bash
-3. make
-4. A docker repository running somewhere other than docker-hub, for
-   local development only. See `Local Development` for additional
-   instructions.
-5. brew (for bats installation on OSX). You may override the
-   installation script for bats to not use homebrew. See `ADDITIONAL
-   CUSTOMIZATION` below.
-6. If you are planning on using podman, you will need to execute the following steps on the podman machine:
+#### Mac
+
+1. [brew](https://brew.sh/)
+2.  [podman](https://podman.io/)
 
     ```shell
     podman machine init
@@ -85,23 +79,55 @@ the necessary installation instructions if necessary.
     rpm-ostree install qemu-user-static
     systemctl reboot
     ```
-7. If building with podman on qemu on linux, you will need to install https://github.com/containers/gvisor-tap-vsock.git . Clone the repository and call make. Then link gvproxy in the bin directory to `/usr/local/lib/podman` like this:
+3. bash
+4. make
+4. A docker repository running somewhere other than docker-hub, for
+   local development only. See `Local Development` for additional
+   instructions.
+   
+#### Ubuntu
 
-   ```shell
-   ln -s <gvisor-tap-vsock-clone-dir>/bin/gvproxy /usr/local/lib/podman/gvproxy
-   ```
+1. [brew](https://brew.sh/)
+2.  [podman](https://podman.io/)
 
-### Switching to an alternative build tool, like podman, from docker
+    ```shell
+	. /etc/os-release
+	echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+	curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key" | sudo apt-key add -
+	sudo apt update
+	sudo apt -y upgrade
+	sudo apt install -y podman	
+    ```
+3. qemu 5
 
-Export the full path to the alternative tool as the `IMAGES_BUILD_TOOL` before running `make`.
+	```shell
+	sudo add-apt-repository ppa:jacob/virtualisation
+	sudo apt update
+	sudo apt install -y qemu qemu-user-static
+	```
 
-    $ export IMAGES_BUILD_TOOL=/opt/homebrew/bin/podman
-    $ make
-
-This will be picked up by the Makefile as an argument. It will then be
-used to run all subsequent docker build commands.
+3. bash
+4. make
+4. A docker repository running somewhere other than docker-hub, for
+   local development only. See `Local Development` for additional
+   instructions.
 
 ### Local Development
+
+### CUSTOMIZATION using `.local.make`
+
+You can override the variables defined in the `Makefile` by creating
+the git ignored file `.local.make` in the top level directory of this
+repo, rather than using environment variables. This file is ignored by
+git so allows you to set things only for your local builds.
+
+#### Ubuntu
+
+```Makefile
+BATS_INSTALL_SCRIPT_LOCATION=./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats_ubuntu.sh
+BATS_LIBS_INSTALL_LOCATION=/usr/local/lib
+IMAGES_BUILD_TOOL=podman
+```
 
 ### Using a non-public docker repository
 
@@ -124,7 +150,7 @@ providing docker capability (https://edofic.com/posts/2021-09-12-podman-m1-amd64
 
 ### TESTS
 
-Tests are run with [bats](https://github.com/sstephenson/bats), and
+Tests are run with [bats](https://bats-core.readthedocs.io/en/stable/), and
 exec to get into a container to test for the existence of things. They
 can be quite slow to execute. You can skip tests in make devel by
 setting `DEVEL_SKIP_TESTS` to `true`.
@@ -135,21 +161,10 @@ setting `DEVEL_SKIP_TESTS` to `true`.
 possible. `make devel` will run the installation for bats on osx using
 homebrew. You can change how `bats` is installed by providing a
 different bats installation script in the
-`BATS_INSTALL_SCRIPT_LOCATION` environment
-variable. The defalut behavior is to see if bats is available on the
+`BATS_INSTALL_SCRIPT_LOCATION` 
+variable. The default behaviour is to see if bats is available on the
 system before installing and installing with `homebrew`.
-
-### CUSTOMIZATION using `.local.make`
-
-You can override the variables defined in the `Makefile` by creating
-the git ignored file `.local.make` in the top level directory of this
-repo, rather than using environment variables. This file is ignored by
-git so allows you to set things only for your local builds.
 
 ## VERSIONING
 
 If possible, all versions will follow the Confluent CP platform versions.
-
-
-### NOTES
-sudo apt install qemu-block-extra qemu-efi qemu-efi-aarch64 qemu-efi-arm qemu-guest-agent qemu-kvm qemu-slof qemu-system qemu-system-arm qemu-system-common qemu-system-data qemu-system-gui qemu-system-mips qemu-system-misc qemu-system-x86 qemu-system-x86-microvm qemu-user qemu-user-binfmt qemubuilder
