@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM openjdk:11.0.13-slim-bullseye
+FROM docker.io/openjdk:11.0.13-slim-bullseye
 
 ARG VERSION
 ARG ARCH
