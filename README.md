@@ -3,7 +3,7 @@
 
 [//]: # ( )
 
-[//]: # (   Licensed under the Apache License, Version 2.0 (the "License");)
+[//]: # (   Licensed under the Apache License, Version 2.0 \(the "License"\);)
 
 [//]: # (   you may not use this file except in compliance with the License.)
 
@@ -85,6 +85,12 @@ the necessary installation instructions if necessary.
    local development only. See `Local Development` for additional
    instructions.
    
+##### Troubleshooting Build on M1
+
+If your podman fails in make make-devel, you may need to [install the patched
+version of podman](https://edofic.com/posts/2021-09-12-podman-m1-amd64/).
+
+   
 #### Ubuntu
 
 1. [brew](https://brew.sh/)
@@ -139,6 +145,11 @@ proper tag. As such, you will want to have a local repository
 available for use during development. I use [the open source docker
 registry](https://docs.docker.com/registry/deploying/). `make-devel-local-registry`
 will start one for you.
+
+Because the default port suggested by the registry image is 5000, and that is a
+very common port for local applications, the port is set to be 7413. You can
+change this in ``.local.make` by setting the varialble
+`DOCKER_REGISTRY_LOCAL_PORT` to the port number you wish to use.
 
 If you are running outside of docker-desktop docker, you will also
 need to enable cross-platform capabilities on the virtual machine
