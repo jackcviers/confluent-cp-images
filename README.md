@@ -143,11 +143,14 @@ tagged with the architecture version so that a manifest add command
 can pull the manifest and add it to the cross-platform manifest at the
 proper tag. As such, you will want to have a local repository
 available for use during development. I use [the open source docker
-registry](https://docs.docker.com/registry/deploying/). `make-devel-local-registry`
+registry](https://docs.docker.com/registry/deploying/). `make launch-devel-local-registry`
 will start one for you.
 
+Even if the container fails to launch, you can remove it with `make
+teardown-devel-local-registry`.
+
 Because the default port suggested by the registry image is 5000, and that is a
-very common port for local applications, the port is set to be 7413. You can
+very common port for local applications, the port is set to be 7411. You can
 change this in ``.local.make` by setting the varialble
 `DOCKER_REGISTRY_LOCAL_PORT` to the port number you wish to use.
 
