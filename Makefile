@@ -1,7 +1,7 @@
 # You can override vars like REPOSITORY in a .local.make file
 -include .local.make
 
-SHELL := /bin/bash
+SHELL ?= /bin/bash
 
 BATS_INSTALL_SCRIPT_LOCATION ?= "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats.sh"
 
@@ -15,34 +15,33 @@ VERSION=${CONFLUENT_MAJOR_VERSION}.${CONFLUENT_MINOR_VERSION}.${CONFLUENT_PATCH_
 
 IMAGES_BUILD_TOOL ?= podman
 
-LOCAL_REGISTRY_CONTAINER_NAME ?= container_registry
-DOCKER_REGISTRY_LOCAL_PORT ?= 7411
+TAG=${VERSION}
+AMD_64_TAG=${TAG}.amd64
+ARM_64_TAG=${TAG}.arm64
 
+.ONESHELL:
+
+.PHONY: install-bats
 install-bats:
 	$(BATS_INSTALL_SCRIPT_LOCATION)
 
+.PHONY: build-base-arm64
 build-base-arm64:
 	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	  && source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
-	  && build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "arm64"
+	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
+	&& build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "arm64"
 
+.PHONY: build-base-amd64
 build-base-amd64:
 	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	  && source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
-	  && build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "amd64"
+	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
+	&& build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "amd64"
 
+.PHONY: build-base
 build-base: build-base-arm64 build-base-amd64
 
-launch-devel-local-registry:
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/local/registry.sh" \
-	&& launch_registry "${IMAGES_BUILD_TOOL}" "${LOCAL_REGISTRY_CONTAINER_NAME}" "${DOCKER_REGISTRY_LOCAL_PORT}"
 
-teardown-devel-local-registry:
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/local/registry.sh" \
-	&& teardown_registry "${IMAGES_BUILD_TOOL}" "${LOCAL_REGISTRY_CONTAINER_NAME}"
-
+.PHONY: test-base-arm64
 test-base-arm64:
 	ARCH=arm64 \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
@@ -50,6 +49,7 @@ test-base-arm64:
 	BATS_IMAGE=localhost/jackcviers/cp-base-new:${VERSION}.arm64 \
 	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
 
+.PHONY: test-base-amd64
 test-base-amd64:
 	ARCH=amd64 \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
@@ -57,16 +57,36 @@ test-base-amd64:
 	BATS_IMAGE=localhost/jackcviers/cp-base-new:${VERSION}.amd64 \
 	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
 
+.PHONY: devel-create-manifest-base
+devel-create-manifest-base:
+	${IMAGES_BUILD_TOOL} manifest create --all localhost/jackcviers/cp-base-new:${TAG} \
+	containers-storage:localhost/jackcviers/cp-base-new:${ARM_64_TAG} \
+	containers-storage:localhost/jackcviers/cp-base-new:${AMD_64_TAG} 
+
+.PHONY: devel-create-manifests
+devel-create-manifests: devel-create-manifest-base
+
+.PHONY: test-base
 test-base: test-base-arm64 test-base-amd64
 
+.PHONY: build-images
 build-images: build-base test-base
 
-test-registry: 
+.PHONY: test-base-manifest
+test-base-manifest:
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
-	BATS_LOCAL_REGISTRY_CONTAINER_NAME=${LOCAL_REGISTRY_CONTAINER_NAME} \
-	BATS_DOCKER_REGISTRY_LOCAL_PORT=${DOCKER_REGISTRY_LOCAL_PORT} \
-	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/local/registry-test.bats
+	VERSION=${VERSION} \
+	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-manifest-test.bats
 
-make-devel: install-bats test-registry build-images
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" && log_info "Run Complete!"
+.PHONY: make-devel
+make-devel: install-bats build-images devel-create-manifests test-base-manifest
+	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
+	&& log_info "Run Complete!"
+
+.PHONY: clean
+clean:
+	-${IMAGES_BUILD_TOOL} rmi localhost/jackcviers/cp-base-new:${VERSION}
+	-${IMAGES_BUILD_TOOL} rmi localhost/jackcviers/cp-base-new:${AMD_64_TAG}
+	-${IMAGES_BUILD_TOOL} rmi localhost/jackcviers/cp-base-new:${ARM_64_TAG}
+

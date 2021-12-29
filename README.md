@@ -71,12 +71,19 @@ the necessary installation instructions if necessary.
 
 1. [brew](https://brew.sh/)
 2.  [podman](https://podman.io/)
-
-    ```shell
-    podman machine init
+    -```shell
+	# Install podman 3.4.2 -- newest version in podman cannot build images on macOS
+	# as it errors out with an incorrect vm temp directory location (stat error).
+	brew tap-new $USER/local-podman
+	brew extract --version=3.4.2 podman $USER/local-podman
+	HOMEBREW_NO_AUTO_UPDATE=1 brew install jackcviers/local-podman/podman@3.4.2
+	# You must give the vm at least 2 cpus, or it will
+	# fail in building cp-base-new during pynacl compilation.
+    podman machine init --cpus 2 --disk-size 50 
+	podman machine start
     podman machine ssh
     sudo -i
-    rpm-ostree install qemu-user-static
+    rpm-ostree install qemu-user-static'
     systemctl reboot
     ```
 3. bash
@@ -89,7 +96,6 @@ the necessary installation instructions if necessary.
 
 If your podman fails in make make-devel, you may need to [install the patched
 version of podman](https://edofic.com/posts/2021-09-12-podman-m1-amd64/).
-
    
 #### Ubuntu
 
@@ -134,29 +140,6 @@ BATS_INSTALL_SCRIPT_LOCATION=./devel/src/main/bash/com/github/jackcviers/conflue
 BATS_LIBS_INSTALL_LOCATION=/usr/local/lib
 IMAGES_BUILD_TOOL=podman
 ```
-
-### Using a non-public docker repository
-
-To create cross-platform docker images, this project does not use
-`buildx`. This requires that images be published to a repository and
-tagged with the architecture version so that a manifest add command
-can pull the manifest and add it to the cross-platform manifest at the
-proper tag. As such, you will want to have a local repository
-available for use during development. I use [the open source docker
-registry](https://docs.docker.com/registry/deploying/). `make launch-devel-local-registry`
-will start one for you.
-
-Even if the container fails to launch, you can remove it with `make
-teardown-devel-local-registry`.
-
-Because the default port suggested by the registry image is 5000, and that is a
-very common port for local applications, the port is set to be 7411. You can
-change this in ``.local.make` by setting the varialble
-`DOCKER_REGISTRY_LOCAL_PORT` to the port number you wish to use.
-
-If you are running outside of docker-desktop docker, you will also
-need to enable cross-platform capabilities on the virtual machine
-providing docker capability (https://edofic.com/posts/2021-09-12-podman-m1-amd64/).
 
 ### BUILDING LOCALLY
 
