@@ -1,7 +1,7 @@
 # You can override vars like REPOSITORY in a .local.make file
 -include .local.make
 
-SHELL := /bin/bash
+SHELL ?= /bin/bash
 
 BATS_INSTALL_SCRIPT_LOCATION ?= "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats.sh"
 
