@@ -71,14 +71,18 @@ the necessary installation instructions if necessary.
 
 1. [brew](https://brew.sh/)
 2.  [podman](https://podman.io/)
-    -```shell
-	# Install podman 3.4.2 -- newest version in podman cannot build images on macOS
-	# as it errors out with an incorrect vm temp directory location (stat error).
+
+Install podman 3.4.2 -- newest version in podman cannot build images on macOS
+
+as it errors out with an incorrect vm temp directory location (stat error).
+You must give the vm at least 2 cpus, or it will
+fail in building cp-base-new during pynacl compilation.
+
+	```shell
 	brew tap-new $USER/local-podman
 	brew extract --version=3.4.2 podman $USER/local-podman
-	HOMEBREW_NO_AUTO_UPDATE=1 brew install jackcviers/local-podman/podman@3.4.2
-	# You must give the vm at least 2 cpus, or it will
-	# fail in building cp-base-new during pynacl compilation.
+	HOMEBREW_NO_AUTO_UPDATE=1 brew install $USER/local-podman/podman@3.4.2
+	ln -s /opt/homebrew/opt/podman@3.4.2/libexec /opt/homebrew/opt/podman/
     podman machine init --cpus 2 --disk-size 50 
 	podman machine start
     podman machine ssh
