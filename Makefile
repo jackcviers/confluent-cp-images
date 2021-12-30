@@ -62,7 +62,13 @@ test-base-amd64:
 devel-create-manifest-base:
 	${IMAGES_BUILD_TOOL} manifest create --all localhost/jackcviers/cp-base-new:${TAG} \
 	containers-storage:localhost/jackcviers/cp-base-new:${ARM_64_TAG} \
-	containers-storage:localhost/jackcviers/cp-base-new:${AMD_64_TAG} 
+	containers-storage:localhost/jackcviers/cp-base-new:${AMD_64_TAG}
+
+.PHONY: ci-export-image-names
+	export IMAGE_NAME=jackcviers/cp-base-new
+	export ARM_64_TAG=${ARM_64_TAG}
+	export AMD_64_TAG=${AMD_64_TAG}
+	export VERSION=${VERSION}
 
 .PHONY: devel-create-manifests
 devel-create-manifests: devel-create-manifest-base
