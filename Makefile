@@ -65,6 +65,7 @@ devel-create-manifest-base:
 	containers-storage:localhost/jackcviers/cp-base-new:${AMD_64_TAG}
 
 .PHONY: ci-export-image-names
+ci-export-image-names:
 	export IMAGE_NAME=jackcviers/cp-base-new
 	export ARM_64_TAG=${ARM_64_TAG}
 	export AMD_64_TAG=${AMD_64_TAG}

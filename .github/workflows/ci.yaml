@@ -84,7 +84,7 @@ jobs:
         if: github.event_name == 'push'
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: localhost/${{ env.IMAGE_NAME }}
+          image: ${{ env.IMAGE_NAME }}
           tags: ${{ env.ARM_64_TAG }} ${{ env.AMD_64_TAG }}
           registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
@@ -92,7 +92,7 @@ jobs:
       - name: Create cross-platform manifest
         if: github.event_name == 'push'
         run: |
-          podman manifest create --all localhost/${{ env.IMAGE_NAME }}:${{ env.VERSION }} \
+          podman manifest create --all ${{ env.IMAGE_NAME }}:${{ env.VERSION }} \
           docker://docker.io/${{ env.IMAGE_NAME }}:${{ env.ARM_64_TAG }} \
           docker://docker.io/${{ env.IMAGE_NAME }}:${{ env.AMD_64_TAG }}
       - name: Publish Cross-Platform manifest to Docker.io
