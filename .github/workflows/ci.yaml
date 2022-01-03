@@ -80,6 +80,10 @@ jobs:
         if: github.event_name == 'push'
         run: |
           make ci-export-image-names
+      - name: Log images available to push
+        if: github.event_name == 'push'
+        run: |
+          echo $(podman images)
       - name: Publish AMD64 + ARM64 Image to Docker.io
         if: github.event_name == 'push'
         uses: redhat-actions/push-to-registry@v2
