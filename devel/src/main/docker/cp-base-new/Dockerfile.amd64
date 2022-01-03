@@ -28,6 +28,8 @@ ENV CUB_CLASSPATH='"/usr/share/java/cp-base-new/*"'
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+ENV LIBSODIUM_MAKE_ARGS="-j 2"
+
 RUN apt update \
 	&& apt install -y \
 	wget \

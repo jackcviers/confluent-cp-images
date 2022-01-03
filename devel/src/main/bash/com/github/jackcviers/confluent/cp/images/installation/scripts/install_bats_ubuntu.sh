@@ -29,19 +29,19 @@ install_bats(){
 	cd ./.bats-install
 	git clone https://github.com/bats-core/bats-core.git
 	cd bats-core
-	sudo ./install.sh /usr/local/
+	sudo ./install.sh /usr/local
 	cd -
-	git clone https://github.com/bats-core/bats-support.git \
+	sudo git clone https://github.com/bats-core/bats-support.git \
 	     --depth=1 \
 	     --branch master \
 	     --single-branch \
 	     ${BATS_LIBS_INSTALL_LOCATION}/bats-support
-	git clone https://github.com/ztombol/bats-assert.git \
+	sudo git clone https://github.com/ztombol/bats-assert.git \
 	     --depth=1 \
 	     --branch master \
 	     --single-branch \
 	     ${BATS_LIBS_INSTALL_LOCATION}/bats-assert
-	git clone https://github.com/bats-core/bats-file.git \
+	sudo git clone https://github.com/bats-core/bats-file.git \
 	    --depth=1 \
 	    --branch master \
 	    --single-branch \
@@ -49,6 +49,8 @@ install_bats(){
 
 	cd $return_dir
 	rm -rf ./.bats-install
+	echo "${BATS_LIBS_INSTALL_LOCATION}"
+	ls -al ${BATS_LIBS_INSTALL_LOCATION}
 	log_success "bats installation complete."
     else
 	log_success "bats already installed."

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bats
 
 # Copyright 2021 Jack Viers
 
@@ -14,22 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+load "${BATS_LIBS_INSTALL_LOCATION}/bats-support/load.bash"
+load "${BATS_LIBS_INSTALL_LOCATION}/bats-assert/load.bash"
 
-launch_registry(){
-    local build_tool=$1
-    local registry_container_name=$2
-    local registry_assigned_port=$3
-
-    $build_tool run -d -p $registry_assigned_port:5000 --restart=always --name $registry_container_name registry:2
-}
-
-teardown_registry(){
-    local build_tool=$1
-    local registry_container_name=$2
-
-    if [ "$( ${build_tool} container inspect -f '{{.State.Running}}' ${registry_container_name} )" == "true" ]; then
-	$build_tool stop $registry_container_name
-	$build_tool rm $registry_container_name
-    fi
+@test "the cross-platform manifest should contain amd64 and arch64 entries" {
+    run $BATS_BUILD_TOOL manifest inspect localhost/jackcviers/cp-base-new:$VERSION
+    assert_output --partial "amd64"
+    assert_output --partial "arm64"
 }
