@@ -22,6 +22,11 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY_USER: ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }}
+  IMAGE_REGISTRY: docker.io
+  REGISTRY_PASSWORD: ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }}
+
 jobs:
   test:
     runs-on: ubuntu-20.04
@@ -67,4 +72,35 @@ jobs:
         run: |
           export SKIP_KERBEROS_TEST=1
           make make-devel
-        
+      - name: Cache built-images
+        if: github.event_name == 'push'
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+      - name: Export image names to env
+        if: github.event_name == 'push'
+        run: |
+          make ci-export-image-names
+      - name: Publish AMD64 + ARM64 Image to Docker.io
+        if: github.event_name == 'push'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: localhost/${{ env.IMAGE_NAME }}
+          tags: ${{ env.ARM_64_TAG }} ${{ env.AMD_64_TAG }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+      - name: Create cross-platform manifest
+        if: github.event_name == 'push'
+        run: |
+          podman manifest create --all localhost/${{ env.IMAGE_NAME }}:${{ env.VERSION }} \
+          docker://docker.io/${{ env.IMAGE_NAME }}:${{ env.ARM_64_TAG }} \
+          docker://docker.io/${{ env.IMAGE_NAME }}:${{ env.AMD_64_TAG }}
+      - name: Publish Cross-Platform manifest to Docker.io
+        if: github.event_name == 'push'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: localhost/${{ env.IMAGE_NAME }}
+          tags: ${{ env.VERSION }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}

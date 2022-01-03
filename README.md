@@ -73,7 +73,6 @@ the necessary installation instructions if necessary.
 2.  [podman](https://podman.io/)
 
 Install podman 3.4.2 -- newest version in podman cannot build images on macOS
-
 as it errors out with an incorrect vm temp directory location (stat error).
 You must give the vm at least 2 cpus, or it will
 fail in building cp-base-new during pynacl compilation.
