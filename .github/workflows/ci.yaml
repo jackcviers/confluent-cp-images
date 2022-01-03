@@ -84,6 +84,7 @@ jobs:
         if: github.event_name == 'push'
         run: |
           echo $(podman images)
+          echo ${env.IMAGE_NAME}
       - name: Publish AMD64 + ARM64 Image to Docker.io
         if: github.event_name == 'push'
         uses: redhat-actions/push-to-registry@v2
