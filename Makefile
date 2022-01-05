@@ -106,8 +106,8 @@ build-base-ci: build-base-arm64-ci build-base-amd64-ci
 
 .PHONY: publish-tagged-images-ci
 publish-tagged-images-ci:
-	podman push docker.io/jackcviers/cp-base-new:${ARM_64_TAG} docker://docker.io/jackcviers/cp-base-new:${ARM_64_TAG} 
-	podman push docker.io/jackcviers/cp-base-new:${AMD_64_TAG} docker://docker.io/jackcviers/cp-base-new:${AMD_64_TAG}
+	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:${ARM_64_TAG} docker://docker.io/jackcviers/cp-base-new:${ARM_64_TAG} 
+	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:${AMD_64_TAG} docker://docker.io/jackcviers/cp-base-new:${AMD_64_TAG}
 
 .PHONY: create-manifest-base-ci
 create-manifest-base-ci:
@@ -120,7 +120,10 @@ create-manifests-ci: create-manifest-base-ci
 
 .PHONY: publish-image-ci
 publish-image-ci:
-	podman push docker.io/jackcviers/cp-base-new:${TAG} docker://docker.io/jackcviers/cp-base-new:${TAG}
+	${IMAGES_BUILD_TOOL} tag docker.io/jackcviers/cp-base-new:${TAG} docker.io/jackcviers/cp-base-new:latest
+	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:${TAG} docker://docker.io/jackcviers/cp-base-new:${TAG}
+	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:latest docker://docker.io/jackcviers/cp-base-new:latest
+
 
 .PHONY: build-images-ci
 build-images-ci: build-base-ci
