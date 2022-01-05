@@ -119,10 +119,12 @@ create-manifest-base-ci:
 create-manifests-ci: create-manifest-base-ci
 
 .PHONY: publish-image-ci
-publish-image-ci: podman push docker.io/jackcviers/cp-base-new:${TAG} docker://docker.io/jackcviers/cp-base-new:${TAG}
+publish-image-ci:
+	podman push docker.io/jackcviers/cp-base-new:${TAG} docker://docker.io/jackcviers/cp-base-new:${TAG}
 
 .PHONY: build-images-ci
 build-images-ci: build-base-ci
+
 .PHONY: make-ci
 make-ci: install-bats build-images-ci publish-tagged-images-ci create-manifests-ci publish-image-ci
 	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
