@@ -69,43 +69,16 @@ jobs:
         run: |
           make install-bats
       - name: Run Build & Tests
+        if: github.event_name == 'pull_request'
         run: |
-          export SKIP_KERBEROS_TEST=1
           make make-devel
-      - name: Cache built-images
-        if: github.event_name == 'push'
-        uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-      - name: Export image names to env
-        if: github.event_name == 'push'
-        run: |
-          make ci-export-image-names
-      - name: Log images available to push
-        if: github.event_name == 'push'
-        run: |
-          echo $(podman images)
-          echo ${env.IMAGE_NAME}
-      - name: Publish AMD64 + ARM64 Image to Docker.io
-        if: github.event_name == 'push'
-        uses: redhat-actions/push-to-registry@v2
+      - name: Log in to Docker.io
+        uses: redhat-actions/podman-login@v1
         with:
-          image: ${{ env.IMAGE_NAME }}
-          tags: ${{ env.ARM_64_TAG }} ${{ env.AMD_64_TAG }}
-          registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
-      - name: Create cross-platform manifest
+          registry: ${{ env.IMAGE_REGISTRY }}
+      - name: Run Build & Tests & Publish to DOCKER.IO
         if: github.event_name == 'push'
         run: |
-          podman manifest create --all ${{ env.IMAGE_NAME }}:${{ env.VERSION }} \
-          docker://docker.io/${{ env.IMAGE_NAME }}:${{ env.ARM_64_TAG }} \
-          docker://docker.io/${{ env.IMAGE_NAME }}:${{ env.AMD_64_TAG }}
-      - name: Publish Cross-Platform manifest to Docker.io
-        if: github.event_name == 'push'
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: localhost/${{ env.IMAGE_NAME }}
-          tags: ${{ env.VERSION }}
-          registry: ${{ env.IMAGE_REGISTRY }}
-          username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.REGISTRY_PASSWORD }}
+          make make-ci
