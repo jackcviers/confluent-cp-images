@@ -55,10 +55,10 @@ RUN apt update \
 
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/net/sourceforge/argparse4j/argparse4j/0.7.0/argparse4j-0.7.0.jar \
 	https://repo1.maven.org/maven2/org/apache/yetus/audience-annotations/0.5.0/audience-annotations-0.5.0.jar \
-	https://packages.confluent.io/maven/io/confluent/common-utils/7.0.0/common-utils-7.0.0.jar \
+	https://packages.confluent.io/maven/io/confluent/common-utils/7.0.1/common-utils-7.0.1.jar \
 	https://repo1.maven.org/maven2/commons-cli/commons-cli/1.4/commons-cli-1.4.jar \
 	https://repo1.maven.org/maven2/io/confluent/confluent-log4j/1.2.17-cp2/confluent-log4j-1.2.17-cp2.jar \
-	https://packages.confluent.io/maven/io/confluent/disk-usage-agent/7.0.0/disk-usage-agent-7.0.0.jar \
+	https://packages.confluent.io/maven/io/confluent/disk-usage-agent/7.0.1/disk-usage-agent-7.0.1.jar \
 	https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar \
 	https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.12.3/jackson-annotations-2.12.3.jar \
 	https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.12.3/jackson-core-2.12.3.jar \
@@ -72,14 +72,15 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/net/sourceforge/argpa
 	https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/1.6.2/jolokia-jvm-1.6.2-agent.jar \
 	https://repo1.maven.org/maven2/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar \
 	https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar \
-	https://packages.confluent.io/maven/org/apache/kafka/kafka-clients/7.0.0-ccs/kafka-clients-7.0.0-ccs.jar \
-	https://packages.confluent.io/maven/org/apache/kafka/kafka-metadata/7.0.0-ccs/kafka-metadata-7.0.0-ccs.jar \
-	https://packages.confluent.io/maven/org/apache/kafka/kafka-raft/7.0.0-ccs/kafka-raft-7.0.0-ccs.jar \
-	https://packages.confluent.io/maven/org/apache/kafka/kafka-server-common/7.0.0-ccs/kafka-server-common-7.0.0-ccs.jar \
-	https://packages.confluent.io/maven/org/apache/kafka/kafka-storage/7.0.0-ccs/kafka-storage-7.0.0-ccs.jar \
-	https://packages.confluent.io/maven/org/apache/kafka/kafka-storage-api/7.0.0-ccs/kafka-storage-api-7.0.0-ccs.jar \
-	https://packages.confluent.io/maven/org/apache/kafka/kafka_2.13/7.0.0-ccs/kafka_2.13-7.0.0-ccs.jar \
+	https://packages.confluent.io/maven/org/apache/kafka/kafka-clients/7.0.1-ccs/kafka-clients-7.0.1-ccs.jar \
+	https://packages.confluent.io/maven/org/apache/kafka/kafka-metadata/7.0.1-ccs/kafka-metadata-7.0.1-ccs.jar \
+	https://packages.confluent.io/maven/org/apache/kafka/kafka-raft/7.0.1-ccs/kafka-raft-7.0.1-ccs.jar \
+	https://packages.confluent.io/maven/org/apache/kafka/kafka-server-common/7.0.1-ccs/kafka-server-common-7.0.1-ccs.jar \
+	https://packages.confluent.io/maven/org/apache/kafka/kafka-storage/7.0.1-ccs/kafka-storage-7.0.1-ccs.jar \
+	https://packages.confluent.io/maven/org/apache/kafka/kafka-storage-api/7.0.1-ccs/kafka-storage-api-7.0.1-ccs.jar \
+	https://packages.confluent.io/maven/org/apache/kafka/kafka_2.13/7.0.1-ccs/kafka_2.13-7.0.1-ccs.jar \
 	https://repo1.maven.org/maven2/org/lz4/lz4-java/1.7.1/lz4-java-1.7.1.jar \
+	https://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.7.30/slf4j-log4j12-1.7.30.jar \
 	https://repo1.maven.org/maven2/com/yammer/metrics/metrics-core/2.2.0/metrics-core-2.2.0.jar \
 	https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1.jar \
 	https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar \
@@ -92,7 +93,7 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/net/sourceforge/argpa
 	https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar \
 	https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.27/snakeyaml-1.27.jar \
 	https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.1.8.1/snappy-java-1.1.8.1.jar \
-	https://packages.confluent.io/maven/io/confluent/utility-belt/7.0.0/utility-belt-7.0.0.jar \
+	https://packages.confluent.io/maven/io/confluent/utility-belt/7.0.1/utility-belt-7.0.1.jar \
 	https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.6.3/zookeeper-3.6.3.jar \
 	https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.6.3/zookeeper-jute-3.6.3.jar /usr/share/java/cp-base-new/
 

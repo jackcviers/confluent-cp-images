@@ -144,13 +144,13 @@ teardown_file(){
     assert_output --partial "appuser"
 }
 
-@test "/usr/share/java/cp-base-new/common-utils-7.0.0.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/common-utils-7.0.0.jar" 3>&-
+@test "/usr/share/java/cp-base-new/common-utils-7.0.1.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/common-utils-7.0.1.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/common-utils-7.0.0.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/common-utils-7.0.0.jar" 3>&-
+@test "/usr/share/java/cp-base-new/common-utils-7.0.1.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/common-utils-7.0.1.jar" 3>&-
     assert_output --partial "appuser"
 }
 
@@ -174,13 +174,13 @@ teardown_file(){
     assert_output --partial "appuser"
 }
 
-@test "/usr/share/java/cp-base-new/disk-usage-agent-7.0.0.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/disk-usage-agent-7.0.0.jar" 3>&-
+@test "/usr/share/java/cp-base-new/disk-usage-agent-7.0.1.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/disk-usage-agent-7.0.1.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/disk-usage-agent-7.0.0.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/disk-usage-agent-7.0.0.jar" 3>&-
+@test "/usr/share/java/cp-base-new/disk-usage-agent-7.0.1.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/disk-usage-agent-7.0.1.jar" 3>&-
     assert_output --partial "appuser"
 }
 
@@ -302,67 +302,67 @@ teardown_file(){
     assert_output --partial "appuser"
 }
 
-@test "/usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-clients-7.0.1-ccs.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-clients-7.0.1-ccs.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-clients-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-clients-7.0.1-ccs.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-clients-7.0.1-ccs.jar" 3>&-
     assert_output --partial "appuser"
 }
-@test "/usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-metadata-7.0.1-ccs.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-metadata-7.0.1-ccs.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-metadata-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-metadata-7.0.1-ccs.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-metadata-7.0.1-ccs.jar" 3>&-
     assert_output --partial "appuser"
 }
-@test "/usr/share/java/cp-base-new/kafka-raft-7.0.0-ccs.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-raft-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-raft-7.0.1-ccs.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-raft-7.0.1-ccs.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/kafka-raft-7.0.0-ccs.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-raft-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-raft-7.0.1-ccs.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-raft-7.0.1-ccs.jar" 3>&-
     assert_output --partial "appuser"
 }
-@test "/usr/share/java/cp-base-new/kafka-server-common-7.0.0-ccs.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-server-common-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-server-common-7.0.1-ccs.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-server-common-7.0.1-ccs.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/kafka-server-common-7.0.0-ccs.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-server-common-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-server-common-7.0.1-ccs.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-server-common-7.0.1-ccs.jar" 3>&-
     assert_output --partial "appuser"
 }
-@test "/usr/share/java/cp-base-new/kafka-storage-7.0.0-ccs.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-storage-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-storage-7.0.1-ccs.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-storage-7.0.1-ccs.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/kafka-storage-7.0.0-ccs.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-storage-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-storage-7.0.1-ccs.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-storage-7.0.1-ccs.jar" 3>&-
     assert_output --partial "appuser"
 }
-@test "/usr/share/java/cp-base-new/kafka-storage-api-7.0.0-ccs.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-storage-api-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-storage-api-7.0.1-ccs.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka-storage-api-7.0.1-ccs.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/kafka-storage-api-7.0.0-ccs.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-storage-api-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka-storage-api-7.0.1-ccs.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka-storage-api-7.0.1-ccs.jar" 3>&-
     assert_output --partial "appuser"
 }
-@test "/usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka_2.13-7.0.1-ccs.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/kafka_2.13-7.0.1-ccs.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka_2.13-7.0.0-ccs.jar" 3>&-
+@test "/usr/share/java/cp-base-new/kafka_2.13-7.0.1-ccs.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/kafka_2.13-7.0.1-ccs.jar" 3>&-
     assert_output --partial "appuser"
 }
 @test "/usr/share/java/cp-base-new/lz4-java-1.7.1.jar should exist" {
@@ -456,6 +456,16 @@ teardown_file(){
     run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/slf4j-api-1.7.30.jar" 3>&-
     assert_output --partial "appuser"
 }
+@test "/usr/share/java/cp-base-new/slf4j-log4j12-1.7.30.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/slf4j-log4j12-1.7.30.jar" 3>&-
+    assert_success
+}
+
+@test "/usr/share/java/cp-base-new/slf4j-log4j12-1.7.30.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/slf4j-log4j12-1.7.30.jar" 3>&-
+    assert_output --partial "appuser"
+}
+
 @test "/usr/share/java/cp-base-new/slf4j-simple-1.7.30.jar should exist" {
     run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/slf4j-simple-1.7.30.jar" 3>&-
     assert_success
@@ -484,13 +494,13 @@ teardown_file(){
     run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/snappy-java-1.1.8.1.jar" 3>&-
     assert_output --partial "appuser"
 }
-@test "/usr/share/java/cp-base-new/utility-belt-7.0.0.jar should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/utility-belt-7.0.0.jar" 3>&-
+@test "/usr/share/java/cp-base-new/utility-belt-7.0.1.jar should exist" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} test -f /usr/share/java/cp-base-new/utility-belt-7.0.1.jar" 3>&-
     assert_success
 }
 
-@test "/usr/share/java/cp-base-new/utility-belt-7.0.0.jar should be owned by appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/utility-belt-7.0.0.jar" 3>&-
+@test "/usr/share/java/cp-base-new/utility-belt-7.0.1.jar should be owned by appuser" {
+    run bash -c "$BATS_BUILD_TOOL exec -it cp-base-test-${ARCH} stat -c '%U' /usr/share/java/cp-base-new/utility-belt-7.0.1.jar" 3>&-
     assert_output --partial "appuser"
 }
 @test "/usr/share/java/cp-base-new/zookeeper-3.6.3.jar should exist" {
