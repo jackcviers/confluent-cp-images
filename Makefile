@@ -65,6 +65,16 @@ LOCAL_CP_KERBEROS_ARM_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/jackcviers/${CP_KERBERO
 LOCAL_CP_KERBEROS_AMD_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/jackcviers/${CP_KERBEROS_COMPONENT}:${AMD_64_TAG}
 LOCAL_CP_KERBEROS_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/jackcviers/${CP_KERBEROS_COMPONENT}:${VERSION}
 
+CP_ZOOKEEPER_DOCKER_CONTEXT_DIR = ./devel/src/main/docker/cp-zookeeper
+CP_ZOOKEEPER_COMPONENT = cp-zookeeper
+CP_ZOOKEEPER_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-test.bats
+DOCKER_HUB_CP_ZOOKEEPER_ARM_64_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${ARM_64_TAG}
+DOCKER_HUB_CP_ZOOKEEPER_AMD_64_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${AMD_64_TAG}
+DOCKER_HUB_CP_ZOOKEEPER_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${VERSION}
+DOCKER_HUB_CP_ZOOKEEPER_LATEST = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:latest
+LOCAL_CP_ZOOKEEPER_ARM_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${ARM_64_TAG}
+LOCAL_CP_ZOOKEEPER_AMD_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${AMD_64_TAG}
+LOCAL_CP_ZOOKEEPER_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${VERSION}
 
 MANIFEST_LOCAL_PROTOCOL = containers-storage
 DOCKER_PROTOCOL = docker://
@@ -88,6 +98,18 @@ build-base-amd64:
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${AMD_DOCKER_ARCH}" "${CP_BASE_NEW_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
 
+.PHONY: build-cp-zookeeper-arm64
+build-cp-zookeeper-arm64:
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_ZOOKEEPER_DOCKER_CONTEXT_DIR}" "${ARM_DOCKER_ARCH}" "${CP_ZOOKEEPER_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
+
+.PHONY: build-cp-zookeeper-amd-64
+build-cp-zookeeper-amd64:
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_ZOOKEEPER_DOCKER_CONTEXT_DIR}" "${AMD_DOCKER_ARCH}" "${CP_ZOOKEEPER_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
+
 .PHONY: build-base
 build-base: build-base-arm64 build-base-amd64
 
@@ -106,6 +128,9 @@ build-cp-kerberos-amd64:
 .PHONY: build-cp-kerberos
 build-cp-kerberos: build-cp-kerberos-arm64 build-cp-kerberos-amd64
 
+.PHONY: build-cp-zookeeper
+build-cp-zookeeper: build-cp-zookeeper-amd64 build-cp-zookeeper-arm64
+
 .PHONY: test-base-arm64
 test-base-arm64:
 	ARCH=${ARM_DOCKER_ARCH} \
@@ -122,6 +147,22 @@ test-base-amd64:
 	BATS_IMAGE=${LOCAL_CP_BASE_NEW_AMD_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_BASE_NEW_TEST_LOCATION}
 
+.PHONY: test-cp-zookeeper-arm64
+test-cp-zookeeper-arm64:
+	ARCH=${ARM_DOCKER_ARCH} \
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_ARM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_TEST_LOCATION}
+
+.PHONY: test-cp-zookeeper-amd64
+test-cp-zookeeper-amd64:
+	ARCH=${AMD_DOCKER_ARCH} \
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_AMD_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_TEST_LOCATION}
+
 .PHONY: devel-create-manifest-base
 devel-create-manifest-base:
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_IMAGE}
@@ -130,8 +171,19 @@ devel-create-manifest-base:
 	${MANIFEST_LOCAL_PROTOCOL}:${LOCAL_CP_BASE_NEW_ARM_IMAGE} \
 	${MANIFEST_LOCAL_PROTOCOL}:${LOCAL_CP_BASE_NEW_AMD_IMAGE}
 
+.PHONY: devel-create-manifest-zookeeper
+devel-create-manifest-zookeeper:
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_ZOOKEEPER_IMAGE}
+	${SLEEP_COMMAND} 1
+	${IMAGES_BUILD_TOOL} ${DOCKER_MANIFEST_COMMAND} ${DOCKER_CREATE_COMMAND_PART} ${DOCKER_ALL_COMMAND_PART} ${LOCAL_CP_ZOOKEEPER_IMAGE} \
+	${MANIFEST_LOCAL_PROTOCOL}:${LOCAL_CP_ZOOKEEPER_ARM_IMAGE} \
+	${MANIFEST_LOCAL_PROTOCOL}:${LOCAL_CP_ZOOKEEPER_AMD_IMAGE}
+
 .PHONY: test-base
 test-base: test-base-arm64 test-base-amd64
+
+.PHONY: test-cp-zookeeper
+test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:
@@ -161,7 +213,8 @@ devel-create-manifest-cp-kerberos:
 test-cp-kerberos: test-cp-kerberos-arm64 test-cp-kerberos-amd64
 
 .PHONY: build-images
-build-images: build-base test-base devel-create-manifest-base test-base-manifest build-cp-kerberos test-cp-kerberos devel-create-manifest-cp-kerberos test-cp-kerberos-manifest
+build-images: build-base test-base devel-create-manifest-base test-base-manifest build-cp-kerberos test-cp-kerberos devel-create-manifest-cp-kerberos test-cp-kerberos-manifest build-cp-zookeeper test-cp-zookeeper devel-create-manifest-zookeeper test-cp-zookeeper-manifest
+
 
 .PHONY: test-base-manifest
 test-base-manifest:
@@ -177,6 +230,13 @@ test-cp-kerberos-manifest:
 	IMAGE=${LOCAL_CP_KERBEROS_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KERBEROS_MANIFEST_TEST_LOCATION}
 
+.PHONY: test-cp-zookeeper-manifest
+test-cp-zookeeper-manifest:
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	IMAGE=${LOCAL_CP_ZOOKEEPER_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_BASE_NEW_MANIFEST_TEST_LOCATION}
+
 .PHONY: make-devel
 make-devel: install-bats build-images
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
@@ -188,6 +248,18 @@ build-base-arm64-ci:
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${ARM_DOCKER_ARCH}" "${CP_BASE_NEW_COMPONENT}"
+
+.PHONY: build-cp-zookeeper-amd64-ci
+build-cp-zookeeper-amd64-ci:
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${AMD_DOCKER_ARCH}" "${CP_ZOOKEEPER_COMPONENT}"
+
+.PHONY: build-cp-zookeeper-arm64-ci
+build-cp-zookeeper-arm64-ci:
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_ZOOKEEPER_DOCKER_CONTEXT_DIR}" "${ARM_DOCKER_ARCH}" "${CP_ZOOKEEPER_COMPONENT}"
 
 .PHONY: build-base-amd64-ci
 build-base-amd64-ci:
@@ -214,12 +286,17 @@ build-cp-kerberos-amd64-ci:
 .PHONY: build-cp-kerberos-ci
 build-cp-kerberos-ci: build-cp-kerberos-arm64-ci build-cp-kerberos-amd64-ci
 
+.PHONY: build-cp-zookeeper-ci
+build-cp-zookeeper-ci: build-cp-zookeeper-arm64-ci build-cp-zookeeper-amd64-ci
+
 .PHONY: publish-tagged-images-ci
 publish-tagged-images-ci:
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_BASE_NEW_ARM_64_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_BASE_NEW_ARM_64_IMAGE}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_BASE_NEW_AMD_64_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_BASE_NEW_AMD_64_IMAGE}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_KERBEROS_ARM_64_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_KERBEROS_ARM_64_IMAGE}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_KERBEROS_AMD_64_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_KERBEROS_AMD_64_IMAGE}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_ZOOKEEPER_ARM_64_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_ZOOKEEPER_ARM_64_IMAGE} 
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_ZOOKEEPER_AMD_64_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_ZOOKEEPER_AMD_64_IMAGE}
 
 .PHONY: create-manifest-base-ci
 create-manifest-base-ci:
@@ -233,8 +310,15 @@ create-manifest-cp-kerberos-ci:
 	${DOCKER_HUB_CP_KERBEROS_ARM_64_IMAGE} \
 	${DOCKER_PROTOCOL}${DOCKER_HUB_CP_KERBEROS_AMD_64_IMAGE}
 
+
+.PHONY: create-manifest-cp-zookeeper-ci
+create-manifest-cp-zookeeper-ci:
+	${IMAGES_BUILD_TOOL} ${DOCKER_MANIFEST_COMMAND} ${DOCKER_CREATE_COMMAND_PART} ${DOCKER_ALL_COMMAND_PART} ${DOCKER_HUB_CP_ZOOKEEPER_IMAGE} \
+	${DOCKER_PROTOCOL}${DOCKER_HUB_CP_ZOOKEEPER_ARM_64_IMAGE} \
+	${DOCKER_PROTOCOL}${DOCKER_HUB_CP_ZOOKEEPER_AMD_64_IMAGE}
+
 .PHONY: create-manifests-ci
-create-manifests-ci: create-manifest-base-ci create-manifest-cp-kerberos-ci
+create-manifests-ci: create-manifest-base-ci create-manifest-cp-kerberos-ci create-manifest-cp-zookeeper-ci
 
 .PHONY: publish-images-ci
 publish-images-ci:
@@ -244,9 +328,12 @@ publish-images-ci:
 	${IMAGES_BUILD_TOOL} tag ${DOCKER_HUB_CP_KERBEROS_IMAGE} ${DOCKER_HUB_CP_KERBEROS_LATEST}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_KERBEROS_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_KERBEROS_IMAGE}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_KERBEROS_LATEST} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_KERBEROS_LATEST}
+	${IMAGES_BUILD_TOOL} tag ${DOCKER_HUB_CP_ZOOKEEPER_IMAGE} ${DOCKER_HUB_CP_ZOOKEEPER_LATEST}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_ZOOKEEPER_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_ZOOKEEPER_IMAGE}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_ZOOKEEPER_LATEST} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_ZOOKEEPER_LATEST}
 
 .PHONY: build-images-ci
-build-images-ci: build-base-ci build-cp-kerberos-ci
+build-images-ci: build-base-ci build-cp-kerberos-ci build-cp-zookeeper-ci
 
 .PHONY: make-ci
 make-ci: install-bats build-images-ci publish-tagged-images-ci create-manifests-ci publish-images-ci
@@ -261,4 +348,7 @@ clean:
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_KERBEROS_IMAGE}
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_KERBEROS_AMD_IMAGE}
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_KERBEROS_ARM_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_ZOOKEEPER_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_ZOOKEEPER_AMD_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_ZOOKEEPER_ARM_IMAGE}
 
