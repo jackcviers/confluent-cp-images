@@ -3,25 +3,60 @@
 
 SHELL := /bin/bash
 
-BATS_INSTALL_SCRIPT_LOCATION ?= "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats.sh"
+SOURCE_COMMAND = source
+TIME_COMMAND = /usr/bin/time
+BATS_COMMAND = bats
+SLEEP_COMMAND = sleep
 
+BATS_INSTALL_SCRIPT_LOCATION ?= "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats.sh"
+COLORS_SOURCE = ./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh
+BUILD_SCRIPT_SOURCE = ./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build.sh
+BUILD_COMMAND = build
+
+LOCALHOST_DOCKER_DOMAIN = localhost
+DOCKER_ORG = jackcviers
 IMAGE_REGISTRY ?= "docker.io"
 REGISTRY_PASSWORD ?= ""
 REGISTRY_USER ?= ""
+
+DOCKER_REMOVE_IMAGE_COMMAND = rmi
+DOCKER_MANIFEST_COMMAND = manifest
+DOCKER_CREATE_COMMAND_PART = create
+DOCKER_ALL_COMMAND_PART = --all
+DOCKER_PUSH_COMMAND = push
 
 BATS_LIBS_INSTALL_LOCATION ?= "/opt/homebrew/lib"
 
 CONFLUENT_MAJOR_VERSION ?= 7
 CONFLUENT_MINOR_VERSION ?= 0
-CONFLUENT_PATCH_VERSION ?= 1
+CONFLUENT_PATCH_VERSION ?= 0
 
 VERSION=${CONFLUENT_MAJOR_VERSION}.${CONFLUENT_MINOR_VERSION}.${CONFLUENT_PATCH_VERSION}
 
 IMAGES_BUILD_TOOL ?= podman
 
-TAG=${VERSION}
-AMD_64_TAG=${TAG}.amd64
-ARM_64_TAG=${TAG}.arm64
+ARM_DOCKER_ARCH = arm64
+AMD_DOCKER_ARCH = amd64
+
+AMD_64_TAG = ${VERSION}.${AMD_DOCKER_ARCH}
+ARM_64_TAG = ${VERSION}.${ARM_DOCKER_ARCH}
+
+CP_BASE_NEW_DOCKER_CONTEXT_DIR = ./devel/src/main/docker/cp-base-new
+CP_BASE_NEW_COMPONENT = cp-base-new
+CP_BASE_NEW_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/cp-base/cp-base-test.bats
+CP_BASE_NEW_MANIFEST_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/manifest-test.bats
+DOCKER_HUB_CP_BASE_NEW_ARM_64_IMAGE = ${DOCKER_PROTOCOL}docker.io/${DOCKER_ORG}/${CP_BASE_NEW_COMPONENT}:${ARM_64_TAG}
+DOCKER_HUB_CP_BASE_NEW_AMD_64_IMAGE = docker.io/${DOCKER_ORG}/${CP_BASE_NEW_COMPONENT}:${AMD_64_TAG}
+DOCKER_HUB_CP_BASE_NEW_IMAGE = docker.io/${DOCKER_ORG}/${CP_BASE_NEW_COMPONENT}:${VERSION}
+DOCKER_HUB_CP_BASE_NEW_LATEST = docker.io/${DOCKER_ORG}/${CP_BASE_NEW_COMPONENT}:latest
+LOCAL_CP_BASE_NEW_ARM_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${DOCKER_ORG}/${CP_BASE_NEW_COMPONENT}:${ARM_64_TAG}
+LOCAL_CP_BASE_NEW_AMD_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${DOCKER_ORG}/${CP_BASE_NEW_COMPONENT}:${AMD_64_TAG}
+LOCAL_CP_BASE_NEW_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${DOCKER_ORG}/${CP_BASE_NEW_COMPONENT}:${VERSION}
+
+
+
+MANIFEST_LOCAL_PROTOCOL = containers-storage
+DOCKER_PROTOCOL = docker://
 
 .ONESHELL:
 
@@ -32,110 +67,109 @@ install-bats:
 
 .PHONY: build-base-arm64
 build-base-arm64:
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
-	&& build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "arm64" "localhost"
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${ARM_DOCKER_ARCH}" "${CP_BASE_NEW_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
 
 .PHONY: build-base-amd64
 build-base-amd64:
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
-	&& build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "amd64" "localhost"
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${AMD_DOCKER_ARCH}" "${CP_BASE_NEW_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
 
 .PHONY: build-base
 build-base: build-base-arm64 build-base-amd64
 
 .PHONY: test-base-arm64
 test-base-arm64:
-	ARCH=arm64 \
+	ARCH=${ARM_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
-	BATS_IMAGE=localhost/jackcviers/cp-base-new:${VERSION}.arm64 \
-	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
+	BATS_IMAGE=${LOCAL_CP_BASE_NEW_ARM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_BASE_NEW_TEST_LOCATION}
 
 .PHONY: test-base-amd64
 test-base-amd64:
-	ARCH=amd64 \
+	ARCH=${AMD_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
-	BATS_IMAGE=localhost/jackcviers/cp-base-new:${VERSION}.amd64 \
-	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
+	BATS_IMAGE=${LOCAL_CP_BASE_NEW_AMD_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_BASE_NEW_TEST_LOCATION}
 
 .PHONY: devel-create-manifest-base
 devel-create-manifest-base:
-	${IMAGES_BUILD_TOOL} manifest create --all localhost/jackcviers/cp-base-new:${TAG} \
-	containers-storage:localhost/jackcviers/cp-base-new:${ARM_64_TAG} \
-	containers-storage:localhost/jackcviers/cp-base-new:${AMD_64_TAG}
-
-.PHONY: devel-create-manifests
-devel-create-manifests: devel-create-manifest-base
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_IMAGE}
+	${SLEEP_COMMAND} 1
+	${IMAGES_BUILD_TOOL} ${DOCKER_MANIFEST_COMMAND} ${DOCKER_CREATE_COMMAND_PART} ${DOCKER_ALL_COMMAND_PART} ${LOCAL_CP_BASE_NEW_IMAGE} \
+	${MANIFEST_LOCAL_PROTOCOL}:${LOCAL_CP_BASE_NEW_ARM_IMAGE} \
+	${MANIFEST_LOCAL_PROTOCOL}:${LOCAL_CP_BASE_NEW_AMD_IMAGE}
 
 .PHONY: test-base
 test-base: test-base-arm64 test-base-amd64
 
 .PHONY: build-images
-build-images: build-base test-base
-
-.PHONY: make-devel
-make-devel: install-bats build-images devel-create-manifests test-base-manifest
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	&& log_info "Run Complete!"
+build-images: build-base test-base devel-create-manifest-base test-base-manifest
 
 .PHONY: test-base-manifest
 test-base-manifest:
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
-	VERSION=${VERSION} \
-	/usr/bin/time bats ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-manifest-test.bats
+	IMAGE=${LOCAL_CP_BASE_NEW_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_BASE_NEW_MANIFEST_TEST_LOCATION}
+
+.PHONY: make-devel
+make-devel: install-bats build-images
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& log_info "Run Complete!"
+
 
 .PHONY: build-base-arm64-ci
 build-base-arm64-ci:
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
-	&& build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "arm64"
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${ARM_DOCKER_ARCH}" "${CP_BASE_NEW_COMPONENT}"
 
 
 .PHONY: build-base-amd64-ci
 build-base-amd64-ci:
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
-	&& source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/build-base.sh" \
-	&& build_base "${IMAGES_BUILD_TOOL}" "${VERSION}" "./devel/src/main/docker/cp-base-new" "amd64"
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${AMD_DOCKER_ARCH}" "${CP_BASE_COMPONENT}"
 
 .PHONY: build-base-ci
 build-base-ci: build-base-arm64-ci build-base-amd64-ci
 
 .PHONY: publish-tagged-images-ci
 publish-tagged-images-ci:
-	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:${ARM_64_TAG} docker://docker.io/jackcviers/cp-base-new:${ARM_64_TAG} 
-	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:${AMD_64_TAG} docker://docker.io/jackcviers/cp-base-new:${AMD_64_TAG}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_BASE_NEW_ARM_64_IMAGE} ${DOCKER_HUB_CP_BASE_NEW_ARM_64_IMAGE} 
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_BASE_NEW_AMD_64_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_BASE_NEW_AMD_64_IMAGE}
 
 .PHONY: create-manifest-base-ci
 create-manifest-base-ci:
-	${IMAGES_BUILD_TOOL} manifest create --all docker.io/jackcviers/cp-base-new:${TAG} \
-	docker://docker.io/jackcviers/cp-base-new:${ARM_64_TAG} \
-	docker://docker.io/jackcviers/cp-base-new:${AMD_64_TAG}
+	${IMAGES_BUILD_TOOL} ${DOCKER_MANIFEST_COMMAND} ${DOCKER_CREATE_COMMAND_PART} ${DOCKER_ALL_COMMAND_PART} ${DOCKER_HUB_CP_BASE_NEW_IMAGE} \
+	${DOCKER_HUB_CP_BASE_NEW_ARM_64_IMAGE} \
+	${DOCKER_PROTOCOL}${DOCKER_HUB_CP_BASE_NEW_AMD_64_IMAGE}
 
 .PHONY: create-manifests-ci
 create-manifests-ci: create-manifest-base-ci
 
-.PHONY: publish-image-ci
-publish-image-ci:
-	${IMAGES_BUILD_TOOL} tag docker.io/jackcviers/cp-base-new:${TAG} docker.io/jackcviers/cp-base-new:latest
-	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:${TAG} docker://docker.io/jackcviers/cp-base-new:${TAG}
-	${IMAGES_BUILD_TOOL} push docker.io/jackcviers/cp-base-new:latest docker://docker.io/jackcviers/cp-base-new:latest
-
+.PHONY: publish-images-ci
+publish-images-ci:
+	${IMAGES_BUILD_TOOL} tag ${DOCKER_HUB_CP_BASE_NEW_IMAGE} ${DOCKER_HUB_CP_BASE_NEW_LATEST}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_BASE_NEW_IMAGE} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_BASE_NEW_IMAGE}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${DOCKER_HUB_CP_BASE_NEW_LATEST} ${DOCKER_PROTOCOL}${DOCKER_HUB_CP_BASE_NEW_LATEST}
 
 .PHONY: build-images-ci
 build-images-ci: build-base-ci
 
 .PHONY: make-ci
-make-ci: install-bats build-images-ci publish-tagged-images-ci create-manifests-ci publish-image-ci
-	source "./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/colors.sh" \
+make-ci: install-bats build-images-ci publish-tagged-images-ci create-manifests-ci publish-images-ci
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& log_info "Run Complete!"
 
 .PHONY: clean
 clean:
-	-${IMAGES_BUILD_TOOL} rmi localhost/jackcviers/cp-base-new:${VERSION}
-	-${IMAGES_BUILD_TOOL} rmi localhost/jackcviers/cp-base-new:${AMD_64_TAG}
-	-${IMAGES_BUILD_TOOL} rmi localhost/jackcviers/cp-base-new:${ARM_64_TAG}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_AMD_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_ARM_IMAGE}
 
