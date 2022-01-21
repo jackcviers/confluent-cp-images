@@ -14,6 +14,7 @@ BUILD_SCRIPT_SOURCE = ./devel/src/main/bash/com/github/jackcviers/confluent/cp/i
 BUILD_COMMAND = build
 
 LOCALHOST_DOCKER_DOMAIN = localhost
+DOCKER_ORG = jackcviers
 IMAGE_REGISTRY ?= "docker.io"
 REGISTRY_PASSWORD ?= ""
 REGISTRY_USER ?= ""
