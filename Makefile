@@ -41,6 +41,8 @@ AMD_DOCKER_ARCH = amd64
 AMD_64_TAG = ${VERSION}.${AMD_DOCKER_ARCH}
 ARM_64_TAG = ${VERSION}.${ARM_DOCKER_ARCH}
 
+MANIFEST_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/manifest-test.bats
+
 CP_BASE_NEW_DOCKER_CONTEXT_DIR = devel/src/main/docker/cp-base-new
 CP_BASE_NEW_COMPONENT = cp-base-new
 CP_BASE_NEW_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-base/cp-base-test.bats
@@ -181,7 +183,7 @@ test-cp-kerberos-amd64:
 
 .PHONY: devel-create-manifest-base
 devel-create-manifest-base:
-	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} --force ${LOCAL_CP_BASE_NEW_IMAGE}
 	${SLEEP_COMMAND} 1
 	${IMAGES_BUILD_TOOL} ${DOCKER_MANIFEST_COMMAND} ${DOCKER_CREATE_COMMAND_PART} ${DOCKER_ALL_COMMAND_PART} ${LOCAL_CP_BASE_NEW_IMAGE} \
 	${MANIFEST_LOCAL_PROTOCOL}:${LOCAL_CP_BASE_NEW_ARM_IMAGE} \
