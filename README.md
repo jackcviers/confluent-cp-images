@@ -97,7 +97,7 @@ fail in building `cp-base-new` during `pynacl` wheel compilation.
 	brew extract --version=3.4.2 podman $USER/local-podman
 	HOMEBREW_NO_AUTO_UPDATE=1 brew install $USER/local-podman/podman@3.4.2
 	ln -s /opt/homebrew/opt/podman@3.4.2/libexec /opt/homebrew/opt/podman/
-    podman machine init --cpus 2 --disk-size 50 
+    podman machine init --disk-size 50 --memory <round_to_nearest_GB_in_MB(total_system_memory / 2)> --cpus <floor(NUM_CPUS / 2)> # example I have 16 GB RAM then it's 8192 for memory. I have 9 cores so it's 4 for cpu.
 	podman machine start
     podman machine ssh
     sudo -i
@@ -110,18 +110,29 @@ fail in building `cp-base-new` during `pynacl` wheel compilation.
 4. A docker repository running somewhere other than docker-hub, for
    local development only. See `Local Development` for additional
    instructions.
-5. *Every time you reboot the podman machine*, you must run the
+5. *MAC ONLY* *Every time you reboot the podman machine*, you must run the
    following:
 
    Replace `<MAC_USER>` with your macos username, and `<macos_ip>` is
-   the ip address under `System Preferences > Sharing > Remote Login`.
+   the ip address under `System Preferences > Sharing`.
    
 	```shell
    	podman machine ssh
-	mkdir -p ~/<MAC_USER>
-	sshfs <MAC_USER>@<macos_ip>:<MAC_USER> ~/<MAC_USER>
+	sudo -i
+	mkdir -p /mnt/Users
+	chown -R core:root /mnt/Users
+	sshfs <MAC_USER>@<macos_ip>:/Users /mnt/Users
+	<enter your password at prompt>
 	exit
 	```
+	
+   You will then have to use the absolute VM address of whatever you
+   have under the local /Users directory as the volume path. So to
+   read and write to your `HOME` from a busybox, for example:
+   
+   ```shell
+   podman run -it --rm -v /mnt/Users/<username>/:/<username> busybox /bin/bash
+   ```
 
 ##### Troubleshooting Build on M1
 
