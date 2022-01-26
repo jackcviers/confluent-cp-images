@@ -15,21 +15,21 @@
 # limitations under the License.
 
 
-build_base(){
+build(){
     local build_tool=$1
     local version=$2
     local docker_context_path=$3
     local arch=$4
     local repository="docker.io"
-    local image_component_name="cp-base-new"
+    local image_component_name=$5
     local image_base_name="jackcviers"
     echo "==================================================================="
-    echo "REPOSITORY IS: $5"
+    echo "REPOSITORY IS: $6"
     echo "ARGS IS: $0"
     echo "==================================================================="
 
-    if [[ ! -z "$5" ]]; then
-	repository=$5
+    if [[ ! -z "$6" ]]; then
+	repository=$6
     fi
 
     local image_name=${repository}/${image_base_name}/${image_component_name}
@@ -41,5 +41,6 @@ build_base(){
 		-t ${image_name}:${version}.${arch} \
 		--build-arg ARCH=${arch} \
 		--build-arg VERSION=$version \
+		--build-arg UPSTREAM_REPOSITORY=$repository \
 		-f $docker_file
 }

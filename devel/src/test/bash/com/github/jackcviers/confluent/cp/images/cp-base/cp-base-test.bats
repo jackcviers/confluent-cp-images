@@ -18,16 +18,12 @@ load "${BATS_LIBS_INSTALL_LOCATION}/bats-support/load.bash"
 load "${BATS_LIBS_INSTALL_LOCATION}/bats-assert/load.bash"
 
 setup_file(){
-    echo "BATS_BUILD_TOOL: $BATS_BUILD_TOOL"
-    echo "$BATS_BUILD_TOOL run -d -t --arch=$ARCH --name cp-base-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null"
     $BATS_BUILD_TOOL run -d -t --arch=$ARCH --name cp-base-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
-     echo "STATUS: $?"
 }
 
 teardown_file(){
     container=cp-base-test-${ARCH}
-    sleep 1
-    $BATS_BUILD_TOOL stop ${container}
+    $BATS_BUILD_TOOL stop -t 2 ${container}
     $BATS_BUILD_TOOL container rm ${container}
 }
 
