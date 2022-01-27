@@ -72,25 +72,10 @@ the necessary installation instructions if necessary.
 1. [brew](https://brew.sh/)
 2.  [podman](https://podman.io/)
 
-Enable remote ssh login for your user on macOS: 
-
-##### Under `System Preferences > Sharing`:
-
-- [x] Remote Login
-
-- [x] Allow full disk access for remote users
-
-- [x] Only these users
-        
-		*Administrators*
-
-##### Install podman 3.4.2
-
-Version 3.4.4 in the podman tap cannot build images on macOS as it
-errors out with an incorrect vm temp directory location (stat error).
-
+Install podman 3.4.2 -- newest version in podman cannot build images on macOS
+as it errors out with an incorrect vm temp directory location (stat error).
 You must give the vm at least 2 cpus, or it will
-fail in building `cp-base-new` during `pynacl` wheel compilation.
+fail in building cp-base-new during pynacl compilation.
 
 	```shell
 	brew tap-new $USER/local-podman
@@ -101,33 +86,19 @@ fail in building `cp-base-new` during `pynacl` wheel compilation.
 	podman machine start
     podman machine ssh
     sudo -i
-    rpm-ostree install qemu-user-static
+    rpm-ostree install qemu-user-static'
     systemctl reboot
     ```
 3. bash
-4. jq
 4. make
 4. A docker repository running somewhere other than docker-hub, for
    local development only. See `Local Development` for additional
    instructions.
-5. *Every time you reboot the podman machine*, you must run the
-   following:
-
-   Replace `<MAC_USER>` with your macos username, and `<macos_ip>` is
-   the ip address under `System Preferences > Sharing > Remote Login`.
    
-	```shell
-   	podman machine ssh
-	mkdir -p ~/<MAC_USER>
-	sshfs <MAC_USER>@<macos_ip>:<MAC_USER> ~/<MAC_USER>
-	exit
-	```
-
 ##### Troubleshooting Build on M1
 
-If your podman fails in make make-devel, you may need to [install the
-patched version of
-podman](https://edofic.com/posts/2021-09-12-podman-m1-amd64/).
+If your podman fails in make make-devel, you may need to [install the patched
+version of podman](https://edofic.com/posts/2021-09-12-podman-m1-amd64/).
    
 #### Ubuntu
 
