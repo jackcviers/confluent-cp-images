@@ -1,0 +1,10 @@
+FROM centos:8.4.2105
+
+# kerberos
+RUN yum install -y krb5-server krb5-libs krb5-workstation
+
+EXPOSE 88 749
+
+COPY ./config.sh /config.sh
+
+ENTRYPOINT ["/config.sh"]
