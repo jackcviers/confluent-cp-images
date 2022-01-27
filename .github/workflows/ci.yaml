@@ -79,5 +79,6 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
           registry: ${{ env.IMAGE_REGISTRY }}
       - name: Run Build & Tests & Publish to DOCKER.IO
+        if: github.event_name == 'push'
         run: |
-          make clean make-ci
+          make make-ci
