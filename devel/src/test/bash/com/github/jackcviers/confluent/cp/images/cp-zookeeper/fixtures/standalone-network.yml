@@ -5,7 +5,7 @@ networks:
     driver: bridge
 services:
   bridge-network:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     networks:
     - zk
     environment:
@@ -18,7 +18,7 @@ services:
     - io.confluent.docker.testing=true
 
   host-network:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     network_mode: host
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
@@ -26,7 +26,7 @@ services:
     - io.confluent.docker.testing=true
 
   bridge-network-jmx:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     networks:
     - zk
     environment:
@@ -41,7 +41,7 @@ services:
     - io.confluent.docker.testing=true
 
   host-network-jmx:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     network_mode: host
     environment:
       ZOOKEEPER_CLIENT_PORT: 52181

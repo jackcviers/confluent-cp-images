@@ -2,19 +2,19 @@
 version: '2'
 services:
   failing-config:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     labels:
     - io.confluent.docker.testing=true
 
   failing-config-ticktime:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     labels:
     - io.confluent.docker.testing=true
 
   failing-config-server-id:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVERS: abc:111:111
@@ -22,24 +22,24 @@ services:
     - io.confluent.docker.testing=true
 
   default-config:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     labels:
     - io.confluent.docker.testing=true
 
   kerberos:
-    image: confluentinc/cp-kerberos
+    image: docker.io/jackcviers/cp-kerberos
     environment:
       BOOTSTRAP: 0
     volumes:
-    - /tmp/zookeeper-config-test/secrets:/tmp/keytab
+    - /mnt/${current_working_directory}/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-zookeeper/fixtures/secrets:/tmp/keytab
     - /dev/urandom:/dev/random
     labels:
     - io.confluent.docker.testing=true
 
   sasl-config:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     hostname: sasl-config
     restart: on-failure:3
     environment:
@@ -50,12 +50,12 @@ services:
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dsun.security.krb5.debug=true
     volumes:
-    - /tmp/zookeeper-config-test/secrets:/etc/kafka/secrets
+    - /mnt/${current_working_directory}/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-zookeeper/fixtures/secrets:/etc/kafka/secrets
     labels:
     - io.confluent.docker.testing=true
 
   full-config:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 22181
@@ -72,28 +72,27 @@ services:
     - io.confluent.docker.testing=true
 
   external-volumes:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_CLIENT_PORT: 2181
     volumes:
-    - /tmp/zk-config-test/data:/var/lib/zookeeper/data
-    - /tmp/zk-config-test/log:/var/lib/zookeeper/log
+    - /mnt/${current_working_directory}/build/tmp/zk-config-test/data:/var/lib/zookeeper/data
+    - /mnt/${current_working_directory}/build/tmp/zk-config-test/log:/var/lib/zookeeper/log
     labels:
     - io.confluent.docker.testing=true
 
   random-user:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_CLIENT_PORT: 2181
-    user: '12345'
     labels:
     - io.confluent.docker.testing=true
 
   kitchen-sink:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 22181
@@ -104,8 +103,7 @@ services:
       ZOOKEEPER_AUTO_PURGE_INTERVAL: 2
       ZOOKEEPER_SNAP_RETAIN_COUNT: 4
     volumes:
-    - /tmp/zk-config-kitchen-sink-test/data:/var/lib/zookeeper/data
-    - /tmp/zk-config-kitchen-sink-test/log:/var/lib/zookeeper/log
-    user: '12345'
+    - /mnt/${current_working_directory}/build/tmp/zk-config-kitchen-sink-test/data:/var/lib/zookeeper/data
+    - /mnt/${current_working_directory}/build/tmp/zk-config-kitchen-sink-test/log:/var/lib/zookeeper/log
     labels:
     - io.confluent.docker.testing=true

@@ -70,6 +70,8 @@ LOCAL_CP_KERBEROS_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/jackcviers/${CP_KERBEROS_CO
 CP_ZOOKEEPER_DOCKER_CONTEXT_DIR = devel/src/main/docker/cp-zookeeper
 CP_ZOOKEEPER_COMPONENT = cp-zookeeper
 CP_ZOOKEEPER_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-test.bats
+CP_ZOOKEEPER_STANDALONE_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-integration-test.bats
+CP_ZOOKEEPER_STANDALONE_NEWTWORKING_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-networking-integration-test.bats
 DOCKER_HUB_CP_ZOOKEEPER_ARM_64_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${ARM_64_TAG}
 DOCKER_HUB_CP_ZOOKEEPER_AMD_64_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${AMD_64_TAG}
 DOCKER_HUB_CP_ZOOKEEPER_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${VERSION}
@@ -157,6 +159,34 @@ test-cp-zookeeper-arm64:
 	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_ARM_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_TEST_LOCATION}
 
+.PHONY: test-cp-zookeeper-integration-standalone-amd64
+test-cp-zookeeper-integration-amd64:
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_AMD_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_STANDALONE_INTEGRATION_TEST_LOCATION}
+
+.PHONY: test-cp-zookeeper-integration-standalone-arm64
+test-cp-zookeeper-integration-arm64:
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_ARM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_STANDALONE_INTEGRATION_TEST_LOCATION}
+
+.PHONY: test-cp-zookeeper-integration-standalone-networking-amd64
+test-cp-zookeeper-integration-amd64:
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_AMD_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_STANDALONE_NEWTWORKING_INTEGRATION_TEST_LOCATION}
+
+.PHONY: test-cp-zookeeper-integration-standalone-networking-arm64
+test-cp-zookeeper-integration-arm64:
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_ARM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_STANDALONE_NEWTWORKING_INTEGRATION_TEST_LOCATION}
+
 .PHONY: test-cp-zookeeper-amd64
 test-cp-zookeeper-amd64:
 	ARCH=${AMD_DOCKER_ARCH} \
@@ -209,7 +239,7 @@ devel-create-manifest-cp-kerberos:
 test-base: test-base-arm64 test-base-amd64
 
 .PHONY: test-cp-zookeeper
-test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64
+test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm46 test-cp-zookeeper-integration-standalone-amd64 test-cp-zookeeper-integration-standalone-arm64
 
 .PHONY: test-cp-kerberos
 test-cp-kerberos: test-cp-kerberos-arm64 test-cp-kerberos-amd64
