@@ -5,7 +5,7 @@ networks:
     driver: bridge
 services:
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_TICK_TIME: 2000
@@ -23,7 +23,7 @@ services:
     - io.confluent.docker.testing=true
 
   zookeeper-2:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_TICK_TIME: 2000
@@ -41,7 +41,7 @@ services:
     - io.confluent.docker.testing=true
 
   zookeeper-3:
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     environment:
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_TICK_TIME: 2000
@@ -59,11 +59,11 @@ services:
     - io.confluent.docker.testing=true
 
   kerberos:
-    image: confluentinc/cp-kerberos
+    image: localhost/jackcviers/cp-kerberos:${VERSION}
     environment:
       BOOTSTRAP: 0
     volumes:
-    - /tmp/zookeeper-bridged-test/secrets:/tmp/keytab
+    - /mnt/${current_working_directory}/secrets:/tmp/keytab
     - /dev/urandom:/dev/random
     networks:
     - zk
@@ -72,7 +72,7 @@ services:
 
   zookeeper-sasl-1:
     hostname: zookeeper-sasl-1
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     # This is required because Zookeeper can fail if kerberos is still initializing.
     restart: on-failure:3
     environment:
@@ -87,7 +87,7 @@ services:
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dsun.security.krb5.debug=true
     volumes:
-    - /tmp/zookeeper-bridged-test/secrets:/etc/kafka/secrets
+    - /mnt/${current_working_directory}/secrets:/etc/kafka/secrets
     networks:
     - zk
     labels:
@@ -95,7 +95,7 @@ services:
 
   zookeeper-sasl-2:
     hostname: zookeeper-sasl-2
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     restart: on-failure:3
     environment:
       ZOOKEEPER_SERVER_ID: 2
@@ -109,7 +109,7 @@ services:
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dsun.security.krb5.debug=true
     volumes:
-    - /tmp/zookeeper-bridged-test/secrets:/etc/kafka/secrets
+    - /mnt/${current_working_directory}/secrets:/etc/kafka/secrets
     networks:
     - zk
     labels:
@@ -117,7 +117,7 @@ services:
 
   zookeeper-sasl-3:
     hostname: zookeeper-sasl-3
-    image: confluentinc/cp-zookeeper:latest
+    image: ${BATS_IMAGE}
     restart: on-failure:3
     environment:
       ZOOKEEPER_SERVER_ID: 3
@@ -131,7 +131,7 @@ services:
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dsun.security.krb5.debug=true
     volumes:
-    - /tmp/zookeeper-bridged-test/secrets:/etc/kafka/secrets
+    - /mnt/${current_working_directory}/secrets:/etc/kafka/secrets
     networks:
     - zk
     labels:

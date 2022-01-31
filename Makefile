@@ -76,6 +76,10 @@ LOCAL_CP_JMXTERM_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${CP_JMXTERM_VERSION_TAG}
 CP_ZOOKEEPER_DOCKER_CONTEXT_DIR = devel/src/main/docker/cp-zookeeper
 CP_ZOOKEEPER_COMPONENT = cp-zookeeper
 CP_ZOOKEEPER_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-test.bats
+CP_ZOOKEEPER_STANDALONE_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-integration-test.bats
+CP_ZOOKEEPER_STANDALONE_NEWTWORKING_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-networking-integration-test.bats
+CP_ZOOKEEPER_BRIDGED_NEWTWORKING_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-bridged-networking-integration-test.bats
+CP_ZOOKEEPER_CLUSTER_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-cluster-integration-test.bats
 DOCKER_HUB_CP_ZOOKEEPER_ARM_64_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${ARM_64_TAG}
 DOCKER_HUB_CP_ZOOKEEPER_AMD_64_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${AMD_64_TAG}
 DOCKER_HUB_CP_ZOOKEEPER_IMAGE = docker.io/${DOCKER_ORG}/${CP_ZOOKEEPER_COMPONENT}:${VERSION}
@@ -90,18 +94,20 @@ DOCKER_PROTOCOL = docker://
 
 .PHONY: install-bats
 install-bats:
+	echo "install-bats..."
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	$(BATS_INSTALL_SCRIPT_LOCATION)
 
-
 .PHONY: build-cp-zookeeper-arm64
 build-cp-zookeeper-arm64:
+	echo "build-cp-zookeeper-arm64..."
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_ZOOKEEPER_DOCKER_CONTEXT_DIR}" "${ARM_DOCKER_ARCH}" "${CP_ZOOKEEPER_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
 
 .PHONY: build-cp-zookeeper-amd-64
 build-cp-zookeeper-amd64:
+	echo "build-cp-zookeeper-amd64..."
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_ZOOKEEPER_DOCKER_CONTEXT_DIR}" "${AMD_DOCKER_ARCH}" "${CP_ZOOKEEPER_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
@@ -126,9 +132,11 @@ build-cp-jmxterm:
 
 .PHONY: build-cp-zookeeper
 build-cp-zookeeper: build-cp-zookeeper-amd64 build-cp-zookeeper-arm64
+	echo "build-cp-zookeeper..."
 
 .PHONY: test-base-arm64
 test-base-arm64:
+	echo "test-base-arm64..."
 	ARCH=${ARM_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -137,6 +145,7 @@ test-base-arm64:
 
 .PHONY: test-base-amd64
 test-base-amd64:
+	echo "test-base-amd64..."
 	ARCH=${AMD_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -145,6 +154,7 @@ test-base-amd64:
 
 .PHONY: test-cp-zookeeper-arm64
 test-cp-zookeeper-arm64:
+	echo "test-cp-zookeeper-arm64..."
 	ARCH=${ARM_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -153,6 +163,7 @@ test-cp-zookeeper-arm64:
 
 .PHONY: test-cp-zookeeper-amd64
 test-cp-zookeeper-amd64:
+	echo "test-cp-zookeeper-amd64..."
 	ARCH=${AMD_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -167,6 +178,7 @@ test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:
+	echo "test-cp-kerberos-arm64..."
 	ARCH=${ARM_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -175,6 +187,7 @@ test-cp-kerberos-arm64:
 
 .PHONY: test-cp-kerberos-amd64
 test-cp-kerberos-amd64:
+	echo "test-cp-kerberos-amd64..."
 	ARCH=${AMD_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -183,9 +196,11 @@ test-cp-kerberos-amd64:
 
 .PHONY: test-cp-kerberos
 test-cp-kerberos: test-cp-kerberos-arm64 test-cp-kerberos-amd64
+	echo "test-cp-kerberos..."
 
 .PHONY: test-cp-jmxterm-arm64
 test-cp-jmxterm-arm64:
+	echo "test-cp-jmxterm-arm64..."
 	ARCH=${ARM_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -194,6 +209,7 @@ test-cp-jmxterm-arm64:
 
 .PHONY: test-cp-jmxterm-amd64
 test-cp-jmxterm-amd64:
+	echo "test-cp-jmxterm-amd64..."
 	ARCH=${AMD_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
@@ -202,6 +218,7 @@ test-cp-jmxterm-amd64:
 
 .PHONY: test-cp-jmxterm
 test-cp-jmxterm: test-cp-jmxterm-arm64 test-cp-jmxterm-amd64
+	echo "test-cp-jmxterm..."
 
 .PHONY: push-base-local
 push-base-local:
@@ -231,7 +248,6 @@ shutdown-local-registry:
 devel: install-bats start-local-registry build-images shutdown-local-registry
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& log_info "Run Complete!"
-
 
 .PHONY: build-base-ci
 build-base-ci:
@@ -274,6 +290,7 @@ ci: devel publish-images-ci
 
 .PHONY: clean
 clean:
+	echo "clean..."
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_IMAGE}
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_KERBEROS_IMAGE}
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_JMXTERM_IMAGE}
