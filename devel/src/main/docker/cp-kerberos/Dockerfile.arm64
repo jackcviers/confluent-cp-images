@@ -1,7 +1,10 @@
 FROM centos:8.4.2105
 
+
 # kerberos
-RUN yum install -y krb5-server krb5-libs krb5-workstation
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-* \
+    && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-* \
+    && yum install -y krb5-server krb5-libs krb5-workstation
 
 EXPOSE 88 749
 
