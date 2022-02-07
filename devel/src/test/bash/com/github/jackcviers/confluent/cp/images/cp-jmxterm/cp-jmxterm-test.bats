@@ -18,7 +18,7 @@ load "${BATS_LIBS_INSTALL_LOCATION}/bats-support/load.bash"
 load "${BATS_LIBS_INSTALL_LOCATION}/bats-assert/load.bash"
 
 setup_file(){
-    $BATS_BUILD_TOOL run -d -t --arch=$ARCH --name cp-jmxterm-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
+    $BATS_BUILD_TOOL run -d --platform=$ARCH --name cp-jmxterm-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
 }
 
 teardown_file(){
@@ -28,17 +28,17 @@ teardown_file(){
 }
 
 @test "/opt/jmxterm-1.0.1-uber.jar should be installed" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} test -f /opt/jmxterm-1.0.1-uber.jar"
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} test -f /opt/jmxterm-1.0.1-uber.jar"
     assert_success
 }
 
 @test "whoami should be appuser" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} whoami" 3>&-
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} whoami" 3>&-
     assert_output --partial "appuser"
 }
 
 @test "pwd should be /home/appuser/" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} pwd" 3>&-
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} pwd" 3>&-
     assert_output --partial "/home/appuser"
 }
 

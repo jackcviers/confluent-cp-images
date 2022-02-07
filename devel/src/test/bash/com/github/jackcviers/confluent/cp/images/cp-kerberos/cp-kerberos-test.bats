@@ -18,7 +18,7 @@ load "${BATS_LIBS_INSTALL_LOCATION}/bats-support/load.bash"
 load "${BATS_LIBS_INSTALL_LOCATION}/bats-assert/load.bash"
 
 setup_file(){
-    $BATS_BUILD_TOOL run -d -t --arch=$ARCH --name cp-kerberos-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
+    $BATS_BUILD_TOOL run -d --platform=$ARCH --name cp-kerberos-test-${ARCH} ${BATS_IMAGE} tail -f /dev/null
 }
 
 teardown_file(){
@@ -28,18 +28,18 @@ teardown_file(){
 }
 
 @test "krb5-server, krb5-libs, and krb5-workstation should be installed" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} yum list --installed"
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} yum list --installed"
     assert_output --partial "krb5-server"
     assert_output --partial "krb5-libs"
     assert_output --partial "krb5-workstation"
 }
 
 @test "config.sh should exist" {
-    run bash -c "$BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} [ -f config.sh ]"
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} [ -f config.sh ]"
     assert_success    
 }
 
 @test "config.sh should be the entrypoint" {
-    run bash -c "$BATS_BUILD_TOOL inspect cp-kerberos-test-${ARCH} | jq -cr '.[0].Config.Entrypoint'"
+    run bash -c "unbuffer $BATS_BUILD_TOOL inspect cp-kerberos-test-${ARCH} | jq -cr '.[0].Path'"
     assert_output "/config.sh"
 }

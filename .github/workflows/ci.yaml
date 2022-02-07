@@ -40,22 +40,15 @@ jobs:
       - name: Checkout project (main)
         if: github.event_name == 'push'
         uses: actions/checkout@v2
-      - name: Install qemu
-        id: qemu
-        uses: docker/setup-qemu-action@v1
-        with:
-          image: tonistiigi/binfmt:latest
-          platforms: all
       - name: Show Available platforms
         run: echo ${{ steps.qemu.outputs.platforms }}
-      - name: Install podman
+      - name: Install rancher-desktop
         run: |
-          . /etc/os-release
-          echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-          curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key" | sudo apt-key add -
+          curl -s https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | gpg --dearmor | sudo dd status=none of=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg
+          echo 'deb [signed-by=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/ ./' | sudo dd status=none of=/etc/apt/sources.list.d/isv-rancher-stable.list
           sudo apt update
-          sudo apt -y upgrade
-          sudo apt install -y podman
+          sudo apt install rancher-desktop
+          sudo apt install expect
       - name: Setup build-essentials
         run: |
           sudo apt update
@@ -64,7 +57,7 @@ jobs:
         run: |
           echo "BATS_INSTALL_SCRIPT_LOCATION=./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats_ubuntu.sh" >> .local.make
           echo "BATS_LIBS_INSTALL_LOCATION=/usr/local/lib" >> .local.make
-          echo "IMAGES_BUILD_TOOL=podman" >> .local.make
+          echo "IMAGES_BUILD_TOOL=nerdctl" >> .local.make
       - name: Setup Bats
         run: |
           make install-bats
@@ -73,12 +66,10 @@ jobs:
         run: |
           make make-devel
       - name: Log in to Docker.io
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.REGISTRY_PASSWORD }}
-          registry: ${{ env.IMAGE_REGISTRY }}
+        if: github.event_name == 'push'
+        run: |
+          nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} docker.io
       - name: Run Build & Tests & Publish to DOCKER.IO
         if: github.event_name == 'push'
         run: |
-          make make-ci
+          make ci

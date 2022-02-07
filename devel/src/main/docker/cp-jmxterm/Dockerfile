@@ -15,7 +15,7 @@
 ARG UPSTREAM_REPOSITORY=docker.io
 ARG VERSION
 
-FROM ${UPSTREAM_REPOSITORY}/jackcviers/cp-base-new:${VERSION}
+FROM --platform=${BUILDPLATFORM} ${UPSTREAM_REPOSITORY}/jackcviers/cp-base-new:${VERSION}
 
 LABEL maintainer="jackcviers@gmail.com"
 LABEL version=$VERSION
