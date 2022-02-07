@@ -48,10 +48,10 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y wget
-          wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-arm64.tar.gz
+          wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           tar Cxzvvf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
           nerdctl run --help
-      - name: Install rancher-desktop
+      - name: Install expect
         run: |
           sudo apt update
           sudo apt install -y expect
