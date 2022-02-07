@@ -42,17 +42,23 @@ jobs:
         uses: actions/checkout@v2
       - name: Show Available platforms
         run: echo ${{ steps.qemu.outputs.platforms }}
+      - name: Setup Containerd
+        uses: crazy-max/ghaction-setup-containerd@v1
+      - name: Install nerdctl-full
+        run: |
+          sudo apt update
+          sudo apt install -y wget
+          wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-arm64.tar.gz
+          tar Cxzvvf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
+          nerdctl run --help
       - name: Install rancher-desktop
         run: |
-          curl -s https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | gpg --dearmor | sudo dd status=none of=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg
-          echo 'deb [signed-by=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/ ./' | sudo dd status=none of=/etc/apt/sources.list.d/isv-rancher-stable.list
           sudo apt update
-          sudo apt install rancher-desktop
-          sudo apt install expect
+          sudo apt install -y expect
       - name: Setup build-essentials
         run: |
           sudo apt update
-          sudo apt install build-essential
+          sudo apt install -y build-essential
       - name: Setup build and test for ubuntu
         run: |
           echo "BATS_INSTALL_SCRIPT_LOCATION=./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats_ubuntu.sh" >> .local.make
@@ -64,12 +70,12 @@ jobs:
       - name: Run Build & Tests
         if: github.event_name == 'pull_request'
         run: |
-          make devel
+          sudo make devel
       - name: Log in to Docker.io
         if: github.event_name == 'push'
         run: |
-          nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} docker.io
+          sudo nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} docker.io
       - name: Run Build & Tests & Publish to DOCKER.IO
         if: github.event_name == 'push'
         run: |
-          make ci
+          sudo make ci
