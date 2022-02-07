@@ -64,7 +64,7 @@ jobs:
       - name: Run Build & Tests
         if: github.event_name == 'pull_request'
         run: |
-          make make-devel
+          make devel
       - name: Log in to Docker.io
         if: github.event_name == 'push'
         run: |
