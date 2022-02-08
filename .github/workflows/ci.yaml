@@ -57,6 +57,7 @@ jobs:
           sudo apt install -y wget
           wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo tar Cxzvvf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
+          sudo ln -s unix:///var/run/docker.sock /run/buildkit/buildkitd.sock
       - name: Install expect
         run: |
           sudo apt update
