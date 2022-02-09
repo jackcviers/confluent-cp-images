@@ -40,23 +40,22 @@ jobs:
       - name: Checkout project (main)
         if: github.event_name == 'push'
         uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          buildkitd-flags: --debug
+          endpoint: tcp:///run/buildkit/buildkitd.sock
+      - name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
       - name: Install nerdctl-full
         run: |
           sudo apt -qq update
           sudo apt -qq install -y wget qemu-user-static gpg
           wget -q https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo tar Cxzf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
-          sudo cp ./.github/workflows/containerd /etc/init.d/containerd
-          sudo cp ./.github/workflows/buildkitd /etc/init.d/buildkitd
-          sudo chown root:root /etc/init.d/containerd /etc/init.d/buildkitd
-          # sudo cp ln -s /usr/local/lib/systemd/system/buildkit.service /etc/systemd/system/buildkit.service
-          # sudo cp ln -s /usr/local/lib/systemd/system/containerd.service /etc/systemd/system/containerd.service
-          # sudo cp ln -s /usr/local/lib/systemd/system/stargz-snapshotter.service /etc/systemd/system/stargz-snapshotter.service
-          sudo service --status-all
-          sudo update-rc.d containerd enable 
-          sudo update-rc.d buildkitd enable
-          sudo service containerd start
-          sudo service buildkit start
           ls -al /run/buildkit/buildkitd.sock
       - name: Install expect
         run: |
