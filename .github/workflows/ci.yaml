@@ -46,8 +46,13 @@ jobs:
           sudo apt -qq install -y wget qemu-user-static gpg
           wget -q https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo tar Cxzf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
-          containerd-rootless-setuptool.sh install
-          containerd-rootless-setuptool.sh install-buildkit
+          sudo cp ./.github/workflows/containerd /etc/init.d/containerd
+          sudo cp ./.github/workflows/buildkitd /etc/init.d/buildkitd
+          sudo chown root:root /etc/init.d/containerd /etc/init.d/buildkitd
+          sudo service --status-all
+          sudo service containerd start
+          sudo service buildkitd start
+          ls -al /run/buildkit/buildkitd.sock
       - name: Install expect
         run: |
           sudo apt update
