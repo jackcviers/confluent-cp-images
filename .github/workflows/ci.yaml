@@ -49,7 +49,7 @@ jobs:
           loginctl enable-linger runner
           sleep 1
           ls /run/user/$UID
-          KDG_RUNTIME_DIR=/run/user/$UID sudo containerd-rootless-setuptool.sh install
+          KDG_RUNTIME_DIR=/run/user/$UID containerd-rootless-setuptool.sh install
       - name: Install expect
         run: |
           sudo apt update
