@@ -47,6 +47,7 @@ jobs:
           wget -q https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo tar Cxzf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
           containerd-rootless-setuptool.sh install
+          containerd-rootless-setuptool.sh install-buildkit
       - name: Install expect
         run: |
           sudo apt update
