@@ -61,6 +61,8 @@ jobs:
           sudo ls -al /var/run/docker.sock
           sudo mkdir -p /run/buildkit/
           sudo ln -s /var/run/docker.sock /run/buildkit/buildkitd.sock
+          sudo service --status-all
+          sudo ps aux | grep buildkitd
       - name: Install expect
         run: |
           sudo apt update
