@@ -63,6 +63,7 @@ jobs:
           sudo ln -s /var/run/docker.sock /run/buildkit/buildkitd.sock
           sudo service --status-all
           sudo ps aux | grep buildkitd
+          sudo which buildctl
       - name: Install expect
         run: |
           sudo apt update
