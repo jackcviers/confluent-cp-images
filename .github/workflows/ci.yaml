@@ -46,10 +46,7 @@ jobs:
           sudo apt -qq install -y wget qemu-user-static gpg
           wget -q https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo tar Cxzf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
-          loginctl enable-linger runner
-          sleep 1
-          ls /run/user/$UID
-          KDG_RUNTIME_DIR=/run/user/$UID containerd-rootless-setuptool.sh install
+          sudo systemctl enable --now containerd
       - name: Install expect
         run: |
           sudo apt update
