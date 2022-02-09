@@ -47,6 +47,8 @@ jobs:
           sudo apt-get -qq install -y wget gpg
           wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo tar Cxzvvf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
+          wget https://github.com/moby/buildkit/releases/download/v0.9.3/buildkit-v0.9.3.linux-amd64.tar.gz
+          sudo tar Cxzvvf /usr/local buildkit-v0.9.3.linux-amd64.tar.gz
           sudo systemctl enable --now containerd
           sudo systemctl enable --now buildkit
       - name: Setup build and test for ubuntu
