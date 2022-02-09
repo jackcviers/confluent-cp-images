@@ -26,6 +26,7 @@ env:
   REGISTRY_USER: ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }}
   IMAGE_REGISTRY: docker.io
   REGISTRY_PASSWORD: ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }}
+  BUILDKIT_HOST: unix:///var/run/docker.sock
 
 jobs:
   test:
@@ -47,16 +48,15 @@ jobs:
         uses: docker/setup-buildx-action@v1
         with:
           buildkitd-flags: --debug
-          endpoint: tcp:///run/buildkit/buildkitd.sock
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
       - name: Install nerdctl-full
         run: |
           sudo apt -qq update
+          sudo apt -qq upgrade -y
           sudo apt -qq install -y wget qemu-user-static gpg
           wget -q https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo tar Cxzf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
-          ls -al /run/buildkit/buildkitd.sock
       - name: Install expect
         run: |
           sudo apt update
