@@ -53,6 +53,8 @@ jobs:
           # sudo cp ln -s /usr/local/lib/systemd/system/containerd.service /etc/systemd/system/containerd.service
           # sudo cp ln -s /usr/local/lib/systemd/system/stargz-snapshotter.service /etc/systemd/system/stargz-snapshotter.service
           sudo service --status-all
+          cat /etc/init.d/containerd
+          cat /etc/init.d/nginx
           # sudo service containerd start
           # sudo service buildkit start
           ls -al /etc/init.d/
