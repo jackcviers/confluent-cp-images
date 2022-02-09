@@ -26,7 +26,6 @@ env:
   REGISTRY_USER: ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }}
   IMAGE_REGISTRY: docker.io
   REGISTRY_PASSWORD: ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }}
-  BUILDKIT_HOST: unix:///var/run/docker.sock
 
 jobs:
   test:
@@ -41,44 +40,27 @@ jobs:
       - name: Checkout project (main)
         if: github.event_name == 'push'
         uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          buildkitd-flags: --debug
-      - name: Available platforms
-        run: echo ${{ steps.buildx.outputs.platforms }}
-      - name: Set up containerd
-        uses: crazy-max/ghaction-setup-containerd@v1
-      - name: Install nerdctl-full
+      - name: Install dependencies
         run: |
           sudo apt-get -qq update
           sudo apt-get -qq upgrade -y
-          sudo apt-get -qq install -y wget
-          wget -q https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
-          sudo tar Cxzf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
-      - name: Install expect
-        run: |
-          sudo apt update
-          sudo apt install -y expect
-      - name: Setup build-essentials
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential
+          sudo apt-get -qq install -y wget gpg
+          wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
+          sudo tar Cxzvvf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
+          sudo systemctl enable --now containerd
+          sudo systemctl enable --now buildkit
       - name: Setup build and test for ubuntu
         run: |
           echo "BATS_INSTALL_SCRIPT_LOCATION=./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats_ubuntu.sh" >> .local.make
           echo "BATS_LIBS_INSTALL_LOCATION=/usr/local/lib" >> .local.make
-          echo "IMAGES_BUILD_TOOL=nerdctl" >> .local.make
+          echo "IMAGES_BUILD_TOOL=sudo nerdctl" >> .local.make
       - name: Setup Bats
         run: |
           make install-bats
       - name: Run Build & Tests
         if: github.event_name == 'pull_request'
         run: |
-          sudo make devel
+          make devel
       - name: Log in to Docker.io
         if: github.event_name == 'push'
         run: |
