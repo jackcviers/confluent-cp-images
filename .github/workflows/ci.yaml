@@ -50,6 +50,8 @@ jobs:
           buildkitd-flags: --debug
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
+      - name: Set up containerd
+        uses: crazy-max/ghaction-setup-containerd@v1
       - name: Install nerdctl-full
         run: |
           sudo apt -qq update
