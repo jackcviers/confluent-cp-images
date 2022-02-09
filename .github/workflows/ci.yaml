@@ -76,7 +76,7 @@ jobs:
       - name: Run Build & Tests
         if: github.event_name == 'pull_request'
         run: |
-          sudo nerdctl build --platform=amd64,arm64 --progress=tty -t localhost:5000/***/cp-base-new:7.0.0 --build-arg ARCH="" --build-arg VERSION=7.0.0 --build-arg UPSTREAM_REPOSITORY=localhost:5000 -f ./devel/src/main/docker/cp-base-new/Dockerfile ./devel/src/main/docker/cp-base-new
+          nerdctl build --platform=amd64,arm64 --progress=tty -t localhost:5000/***/cp-base-new:7.0.0 --build-arg ARCH="" --build-arg VERSION=7.0.0 --build-arg UPSTREAM_REPOSITORY=localhost:5000 -f ./devel/src/main/docker/cp-base-new/Dockerfile ./devel/src/main/docker/cp-base-new
           # sudo make devel
       - name: Log in to Docker.io
         if: github.event_name == 'push'
