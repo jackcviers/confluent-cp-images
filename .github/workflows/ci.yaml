@@ -53,8 +53,8 @@ jobs:
           # sudo cp ln -s /usr/local/lib/systemd/system/containerd.service /etc/systemd/system/containerd.service
           # sudo cp ln -s /usr/local/lib/systemd/system/stargz-snapshotter.service /etc/systemd/system/stargz-snapshotter.service
           sudo service --status-all
-          sudo update-rc.d enable containerd
-          sudo update-rc.d enable buildkitd
+          sudo update-rc.d containerd enable 
+          sudo update-rc.d buildkitd enable
           sudo service containerd start
           sudo service buildkit start
           ls -al /run/buildkit/buildkitd.sock
