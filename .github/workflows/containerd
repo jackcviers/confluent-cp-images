@@ -1,127 +1,130 @@
-#!/bin/bash
+#!/bin/sh
 
-# containerd daemon
+### BEGIN INIT INFO
+# Provides:	  containerd
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the containerd service
+# Description:       starts containerd using start-stop-daemon
+### END INIT INFO
 
-# chkconfig: 345 20 80
-
-# description: containerd daemon
-
-# processname: containerd
-
- 
-
-DAEMON_PATH="/usr/local/bin/"
-
- 
-
-DAEMON=containerd
-
-DAEMONOPTS=""
-
- 
-
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/local/bin/containerd
 NAME=containerd
+DESC=containerd
 
-DESC="Containerd"
+STOP_SCHEDULE="${STOP_SCHEDULE:-QUIT/5/TERM/5/KILL/5}"
 
-PIDFILE=/var/run/$NAME.pid
+test -x $DAEMON || exit 0
 
-SCRIPTNAME=/etc/init.d/$NAME
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
 
- 
+PID=/run/containerd.pid
+
+start_containerd() {
+	# Start the daemon/service
+	#
+	# Returns:
+	#   0 if daemon has been started
+	#   1 if daemon was already running
+	#   2 if daemon could not be started
+	start-stop-daemon --start --quiet --pidfile $PID --exec $DAEMON --test > /dev/null \
+		|| return 1
+	start-stop-daemon --start --quiet --pidfile $PID --exec $DAEMON -- \
+		$DAEMON_OPTS 2>/dev/null \
+		|| return 2
+}
+
+
+stop_containerd() {
+	# Stops the daemon/service
+	#
+	# Return
+	#   0 if daemon has been stopped
+	#   1 if daemon was already stopped
+	#   2 if daemon could not be stopped
+	#   other if a failure occurred
+	start-stop-daemon --stop --quiet --retry=$STOP_SCHEDULE --pidfile $PID --name $NAME
+	RETVAL="$?"
+	sleep 1
+	return "$RETVAL"
+}
+
+reload_containerd() {
+	# Function that sends a SIGHUP to the daemon/service
+	start-stop-daemon --stop --signal HUP --quiet --pidfile $PID --name $NAME
+	return 0
+}
+
+rotate_logs() {
+	# Rotate log files
+	start-stop-daemon --stop --signal USR1 --quiet --pidfile $PID --name $NAME
+	return 0
+}
 
 case "$1" in
+	start)
+		log_daemon_msg "Starting $DESC" "$NAME"
+		start_containerd
+		case "$?" in
+			0|1) log_end_msg 0 ;;
+			2)   log_end_msg 1 ;;
+		esac
+		;;
+	stop)
+		log_daemon_msg "Stopping $DESC" "$NAME"
+		stop_containerd
+		case "$?" in
+			0|1) log_end_msg 0 ;;
+			2)   log_end_msg 1 ;;
+		esac
+		;;
+	restart)
+		log_daemon_msg "Restarting $DESC" "$NAME"
 
-start)
+		# Check configuration before stopping nginx
+		if ! test_config; then
+			log_end_msg 1 # Configuration error
+			exit $?
+		fi
 
-    printf "%-50s" "Starting $NAME..."
+		stop_containerd
+		case "$?" in
+			0|1)
+				start_containerd
+				case "$?" in
+					0) log_end_msg 0 ;;
+					1) log_end_msg 1 ;; # Old process is still running
+					*) log_end_msg 1 ;; # Failed to start
+				esac
+				;;
+			*)
+				# Failed to stop
+				log_end_msg 1
+				;;
+		esac
+		;;
+	reload|force-reload)
+		log_daemon_msg "Reloading $DESC configuration" "$NAME"
 
-    cd $DAEMON_PATH
+		# Check configuration before stopping nginx
+		#
+		# This is not entirely correct since the on-disk nginx binary
+		# may differ from the in-memory one, but that's not common.
+		# We prefer to check the configuration and return an error
+		# to the administrator.
+		if ! test_config; then
+			log_end_msg 1 # Configuration error
+			exit $?
+		fi
 
-    PID=`$DAEMON $DAEMONOPTS > /dev/null 2>&1 & echo $!`
-
-    #echo "Saving PID" $PID " to " $PIDFILE
-
-        if [ -z $PID ]; then
-
-            printf "%s\n" "Fail"
-
-        else
-
-            echo $PID > $PIDFILE
-
-            printf "%s\n" "Ok"
-
-        fi
-
-;;
-
-status)
-
-        printf "%-50s" "Checking $NAME..."
-
-        if [ -f $PIDFILE ]; then
-
-            PID=`cat $PIDFILE`
-
-            if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
-
-                printf "%s\n" "Process dead but pidfile exists"
-
-            else
-
-                echo "Running"
-
-            fi
-
-        else
-
-            printf "%s\n" "Service not running"
-
-        fi
-
-;;
-
-stop)
-
-        printf "%-50s" "Stopping $NAME"
-
-            PID=`cat $PIDFILE`
-
-            cd $DAEMON_PATH
-
-        if [ -f $PIDFILE ]; then
-
-            kill -HUP $PID
-
-            printf "%s\n" "Ok"
-
-            rm -f $PIDFILE
-
-        else
-
-            printf "%s\n" "pidfile not found"
-
-        fi
-
-;;
-
- 
-
-restart)
-
-    $0 stop
-
-    $0 start
-
-;;
-
- 
-
-*)
-
-        echo "Usage: $0 {status|start|stop|restart}"
-
-        exit 1
-
+		reload_containerd
+		log_end_msg $?
+		;;
+	status)
+		status_of_proc -p $PID "$DAEMON" "$NAME" && exit 0 || exit $?
+		;;
 esac
