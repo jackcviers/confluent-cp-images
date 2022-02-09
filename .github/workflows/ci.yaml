@@ -55,10 +55,10 @@ jobs:
         uses: crazy-max/ghaction-setup-containerd@v1
       - name: Install nerdctl-full
         run: |
-          sudo apt update
-          sudo apt install -y wget
-          wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
-          sudo tar Cxzvvf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
+          sudo apt -qq update
+          sudo apt -qq install -y wget
+          wget -q https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
+          sudo tar Cxzf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
           sudo which buildctl
           sudo service --status-all
           sudo ps aux | grep buildkitd
@@ -82,7 +82,8 @@ jobs:
       - name: Run Build & Tests
         if: github.event_name == 'pull_request'
         run: |
-          sudo make devel
+          sudo nerdctl build --platform=amd64,arm64 --progress=tty -t localhost:5000/***/cp-base-new:7.0.0 --build-arg ARCH="" --build-arg VERSION=7.0.0 --build-arg UPSTREAM_REPOSITORY=localhost:5000 -f ./devel/src/main/docker/cp-base-new/Dockerfile ./devel/src/main/docker/cp-base-new
+          # sudo make devel
       - name: Log in to Docker.io
         if: github.event_name == 'push'
         run: |
