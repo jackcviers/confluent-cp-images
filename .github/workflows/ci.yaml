@@ -44,7 +44,6 @@ jobs:
         run: |
           loginctl enable-linger runner
           sleep 1
-          ls /run/user/$UID
           export XDG_RUNTIME_DIR=/run/user/$UID
           sudo apt-get -qq update
           sudo apt-get -qq upgrade -y
@@ -68,10 +67,9 @@ jobs:
       - name: Run Build & Tests
         if: github.event_name == 'pull_request'
         run: |
-          # loginctl enable-linger runner
-          # sleep 1
-          # ls /run/user/$UID
-          # export XDG_RUNTIME_DIR=/run/user/$UID
+          loginctl enable-linger runner
+          sleep 1
+          export XDG_RUNTIME_DIR=/run/user/$UID
           make devel
       - name: Log in to Docker.io
         if: github.event_name == 'push'
