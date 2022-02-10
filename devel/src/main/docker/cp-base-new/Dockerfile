@@ -1,4 +1,4 @@
-# Copyright 2021 Jack Viers
+# Copyright 2021-2022 Jack Viers
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM docker.io/openjdk:11.0.13-slim-bullseye
+FROM docker.io/openjdk:11.0.13-slim-bullseye as base
 
 ARG VERSION
 ARG ARCH
@@ -25,13 +25,13 @@ LABEL summary="Common base image for Confluent Components' Docker images."
 
 ENV LANG="C.UTF-8"
 ENV CUB_CLASSPATH='"/usr/share/java/cp-base-new/*"'
-
 ENV DEBIAN_FRONTEND=noninteractive
-
 ENV LIBSODIUM_MAKE_ARGS="-j 2"
+ENV PROOVES_LOCAL="local"
 
 RUN apt update \
 	&& apt install -y \
+	build-essential \
 	wget \
 	nmap \
 	ncat \
@@ -42,7 +42,7 @@ RUN apt update \
 	iputils-ping \
 	iputils-clockdiff \
 	iputils-arping \
-	python3-pip \	
+	python3-pip \
 	git \
 	&& update-alternatives --install /usr/bin/python python /usr/bin/python3 99 \
 	&& python3 -m pip install --upgrade "pip>=21,<22" \
@@ -50,7 +50,7 @@ RUN apt update \
 	&& apt remove -y git \
 	&& apt clean \
 	&& rm -rf /tmp/* \
-	&& mkdir -p /etc/confluent/docker /usr/logs/\
+	&& mkdir -p /etc/confluent/docker /usr/logs/ \
 	&& useradd --no-log-init --create-home --shell /bin/bash appuser \
 	&& chown appuser:appuser -R /etc/confluent/
 
@@ -98,7 +98,20 @@ ADD --chown=appuser:appuser https://repo1.maven.org/maven2/net/sourceforge/argpa
 	https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.6.3/zookeeper-3.6.3.jar \
 	https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.6.3/zookeeper-jute-3.6.3.jar /usr/share/java/cp-base-new/
 
+#switch case start
+#case TARGETARCH is arm64
+FROM base as arm64
+
+ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.0-2/zstd-jni-1.5.0-2-linux_aarch64.jar /usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar
+
+#case TARGETARCH is amd64
+FROM base as amd64
+
 ADD --chown=appuser:appuser https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.0-2/zstd-jni-1.5.0-2-linux_amd64.jar /usr/share/java/cp-base-new/zstd-jni-1.5.0-2.jar
+
+
+FROM ${TARGETARCH} as final
+#execute switch
 
 COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
 

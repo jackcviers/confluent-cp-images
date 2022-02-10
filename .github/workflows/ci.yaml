@@ -40,45 +40,42 @@ jobs:
       - name: Checkout project (main)
         if: github.event_name == 'push'
         uses: actions/checkout@v2
-      - name: Install qemu
-        id: qemu
-        uses: docker/setup-qemu-action@v1
-        with:
-          image: tonistiigi/binfmt:latest
-          platforms: all
-      - name: Show Available platforms
-        run: echo ${{ steps.qemu.outputs.platforms }}
-      - name: Install podman
+      - name: Install dependencies
         run: |
-          . /etc/os-release
-          echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-          curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key" | sudo apt-key add -
-          sudo apt update
-          sudo apt -y upgrade
-          sudo apt install -y podman
-      - name: Setup build-essentials
-        run: |
-          sudo apt update
-          sudo apt install build-essential
+          loginctl enable-linger runner
+          sleep 1
+          export XDG_RUNTIME_DIR=/run/user/$UID
+          sudo apt-get -qq update
+          sudo apt-get -qq upgrade -y
+          sudo apt-get -qq install -y wget gpg expect
+          wget https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-full-0.16.1-linux-amd64.tar.gz
+          sudo tar Cxzvvf /usr/local nerdctl-full-0.16.1-linux-amd64.tar.gz
+          wget https://github.com/moby/buildkit/releases/download/v0.9.3/buildkit-v0.9.3.linux-amd64.tar.gz
+          sudo tar Cxzvvf /usr/local buildkit-v0.9.3.linux-amd64.tar.gz
+          containerd-rootless-setuptool.sh install
+          containerd-rootless-setuptool.sh install-buildkit
+          sleep 1
+          sudo nerdctl run --privileged --rm tonistiigi/binfmt --install all
       - name: Setup build and test for ubuntu
         run: |
           echo "BATS_INSTALL_SCRIPT_LOCATION=./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats_ubuntu.sh" >> .local.make
           echo "BATS_LIBS_INSTALL_LOCATION=/usr/local/lib" >> .local.make
-          echo "IMAGES_BUILD_TOOL=podman" >> .local.make
+          # echo "IMAGES_BUILD_TOOL=sudo nerdctl" >> .local.make
       - name: Setup Bats
         run: |
           make install-bats
       - name: Run Build & Tests
         if: github.event_name == 'pull_request'
         run: |
-          make make-devel
+          loginctl enable-linger runner
+          sleep 1
+          export XDG_RUNTIME_DIR=/run/user/$UID
+          make devel
       - name: Log in to Docker.io
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.REGISTRY_PASSWORD }}
-          registry: ${{ env.IMAGE_REGISTRY }}
+        if: github.event_name == 'push'
+        run: |
+          sudo nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} docker.io
       - name: Run Build & Tests & Publish to DOCKER.IO
         if: github.event_name == 'push'
         run: |
-          make make-ci
+          sudo make ci
