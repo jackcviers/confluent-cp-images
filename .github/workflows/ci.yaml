@@ -74,8 +74,14 @@ jobs:
       - name: Log in to Docker.io
         if: github.event_name == 'push'
         run: |
-          sudo nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} docker.io
+          loginctl enable-linger runner
+          sleep 1
+          export XDG_RUNTIME_DIR=/run/user/$UID
+          nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} docker.io
       - name: Run Build & Tests & Publish to DOCKER.IO
         if: github.event_name == 'push'
         run: |
-          sudo make ci
+          loginctl enable-linger runner
+          sleep 1
+          export XDG_RUNTIME_DIR=/run/user/$UID
+          make ci
