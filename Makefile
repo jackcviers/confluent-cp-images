@@ -193,22 +193,11 @@ build-cp-kerberos-ci:
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_KERBEROS_DOCKER_CONTEXT_DIR}" "${CP_KERBEROS_COMPONENT}"
 
-
 .PHONY: build-cp-jmxterm-ci
 build-cp-jmxterm-ci:
-	.PHONY: build-cp-jmxterm-arm64-ci
-build-cp-jmxterm-arm64-ci:
-	${SOURCE_COMMAND} ${COLORS_SOURCE} \
-	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
-	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_JMXTERM_DOCKER_CONTEXT_DIR}" "${ARM_DOCKER_ARCH}" "${CP_JMXTERM_COMPONENT}"
-
-
-.PHONY: build-cp-jmxterm-amd64-ci
-build-cp-jmxterm-amd64-ci:
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_JMXTERM_DOCKER_CONTEXT_DIR}" "${CP_JMXTERM_COMPONENT}"
-
 
 .PHONY: publish-images-ci
 publish-images-ci:
