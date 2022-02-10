@@ -51,7 +51,8 @@ jobs:
           sudo tar Cxzvvf /usr/local buildkit-v0.9.3.linux-amd64.tar.gz
           sudo systemctl enable --now containerd
           sudo systemctl enable --now buildkit
-          nerdctl run --privileged --rm tonistiigi/binfmt --install all
+          sleep 1
+          sudo nerdctl run --privileged --rm tonistiigi/binfmt --install all
       - name: Setup build and test for ubuntu
         run: |
           echo "BATS_INSTALL_SCRIPT_LOCATION=./devel/src/main/bash/com/github/jackcviers/confluent/cp/images/installation/scripts/install_bats_ubuntu.sh" >> .local.make
