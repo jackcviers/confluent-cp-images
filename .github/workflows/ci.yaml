@@ -71,18 +71,10 @@ jobs:
           sleep 1
           export XDG_RUNTIME_DIR=/run/user/$UID
           make devel
-      - name: Log in to Docker.io
-        if: github.event_name == 'push'
-        run: |
-          loginctl enable-linger runner
-          sleep 1
-          export XDG_RUNTIME_DIR=/run/user/$UID
-          #apparently nerdctl can't handle redirects or something?
-          nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} registry-1.docker.io
       - name: Run Build & Tests & Publish to DOCKER.IO
         if: github.event_name == 'push'
         run: |
           loginctl enable-linger runner
           sleep 1
           export XDG_RUNTIME_DIR=/run/user/$UID
-          make ci
+          nerdctl login -p ${{ secrets.DOCKER_HUB_JACKCVIERS_ACCESS_TOKEN }} -u ${{ secrets.DOCKER_HUB_JACKCVIERS_USERNAME }} && make ci
