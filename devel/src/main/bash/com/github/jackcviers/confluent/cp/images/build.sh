@@ -32,7 +32,7 @@ build(){
 	repository=$5
     fi
     
-    if [[ "${repsitory}" = "localhost:5000" ]]; then
+    if [[ "${repository}" = "localhost:5000" ]]; then
 	insecure="--insecure-registry"
     fi
 
@@ -41,7 +41,7 @@ build(){
     local docker_file="${docker_context_path}/Dockerfile"
     log_info "Building with: 
               $build_tool build $insecure \
-	        --platform=amd64,arm64 \
+	        --platform=linux/amd64,linux/arm64 \
 		--progress=tty \
 		-t ${image_name}:${version} \
 		--build-arg ARCH=\"\" \

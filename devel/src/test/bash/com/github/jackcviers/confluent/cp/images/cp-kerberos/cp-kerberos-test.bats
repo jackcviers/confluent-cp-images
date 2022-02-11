@@ -28,15 +28,15 @@ teardown_file(){
 }
 
 @test "krb5-server, krb5-libs, and krb5-workstation should be installed" {
-    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} yum list --installed"
-    assert_output --partial "krb5-server"
-    assert_output --partial "krb5-libs"
-    assert_output --partial "krb5-workstation"
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} apt list krb5-kdc krb5-admin-server krb5-config --installed"
+    assert_output --partial "krb5-kdc"
+    assert_output --partial "krb5-admin-server"
+    assert_output --partial "krb5-config"
 }
 
 @test "config.sh should exist" {
-    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} [ -f config.sh ]"
-    assert_success    
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-kerberos-test-${ARCH} ls -al /"
+    assert_output --partial "config.sh"
 }
 
 @test "config.sh should be the entrypoint" {

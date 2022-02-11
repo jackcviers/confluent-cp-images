@@ -1,9 +1,11 @@
-FROM centos:8.4.2105
+ARG UPSTREAM_REPOSITORY=docker.io
+ARG VERSION
 
-# kerberos
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-* \
-    && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-* \
-    && yum install -y krb5-server krb5-libs krb5-workstation
+FROM --platform=${BUILDPLATFORM} ${UPSTREAM_REPOSITORY}/jackcviers/cp-base-new:${VERSION}
+
+USER root
+
+RUN apt install -y krb5-kdc krb5-admin-server krb5-config -y
 
 EXPOSE 88 749
 
