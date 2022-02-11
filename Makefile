@@ -163,7 +163,11 @@ test-cp-zookeeper-amd64:
 test-base: test-base-arm64 test-base-amd64
 
 .PHONY: test-cp-zookeeper
-test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64
+test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64 \
+	test-cp-zookeeper-arm64-standalone test-cp-zookeeper-amd64-standalone \
+	test-cp-zookeeper-arm64-standalone-network test-cp-zookeeper-amd64-standalone-network \
+	test-cp-zookeeper-amd64-cluster-bridged test-cp-zookeeper-arm64-cluster-bridged \
+	test-cp-zookeeper-amd64-cluster-host test-cp-zookeeper-amd64-cluster-bridged
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:
