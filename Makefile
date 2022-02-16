@@ -76,11 +76,10 @@ LOCAL_CP_JMXTERM_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${CP_JMXTERM_VERSION_TAG}
 
 CP_ZOOKEEPER_COMPONENT = cp-zookeeper
 CP_ZOOKEEPER_DOCKER_CONTEXT_DIR = devel/src/main/docker/cp-zookeeper
-CP_ZOOKEEPER_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-test.bats
-CP_ZOOKEEPER_STANDALONE_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-integration-test.bats
-CP_ZOOKEEPER_STANDALONE_NEWTWORKING_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-networking-integration-test.bats
-CP_ZOOKEEPER_BRIDGED_NEWTWORKING_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-bridged-networking-integration-test.bats
-CP_ZOOKEEPER_CLUSTER_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/${DOCKER_ORG}/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-cluster-integration-test.bats
+CP_ZOOKEEPER_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-test.bats
+CP_ZOOKEEPER_STANDALONE_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-integration-test.bats
+CP_ZOOKEEPER_STANDALONE_NEWTWORKING_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-standalone-networking-integration-test.bats
+CP_ZOOKEEPER_BRIDGED_NEWTWORKING_INTEGRATION_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_ZOOKEEPER_COMPONENT}/${CP_ZOOKEEPER_COMPONENT}-bridged-networking-integration-test.bats
 CP_ZOOKEEPER_IMAGE = jackcviers/${CP_ZOOKEEPER_COMPONENT}
 CP_ZOOKEEPER_VERSION_TAG = jackcviers/${CP_ZOOKEEPER_COMPONENT}:${VERSION}
 CP_ZOOKEEPER_LATEST_TAG = jackcviers/${CP_ZOOKEEPER_COMPONENT}:${LATEST}
@@ -147,7 +146,7 @@ test-cp-zookeeper-arm64:
 	ARCH=${ARM_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
-	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_ARM_IMAGE} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_TEST_LOCATION}
 
 .PHONY: test-cp-zookeeper-amd64
@@ -156,18 +155,47 @@ test-cp-zookeeper-amd64:
 	ARCH=${AMD_DOCKER_ARCH} \
 	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
 	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
-	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_AMD_IMAGE} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_TEST_LOCATION}
+
+.PHONY: test-cp-zookeeper-standalone
+test-cp-zookeeper-standalone:
+	echo "test-cp-zookeeper-standalone..."
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_COMPOSE_TOOL=${IMAGES_COMPOSE_TOOL} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_IMAGE} \
+	JMX_IMAGE=${LOCAL_CP_JMXTERM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_STANDALONE_INTEGRATION_TEST_LOCATION}
+
+.PHONY: test-cp-zookeeper-standalone-network
+test-cp-zookeeper-standalone-network:
+	echo "test-cp-zookeeper-standalone-network..."
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_COMPOSE_TOOL=${IMAGES_COMPOSE_TOOL} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_IMAGE} \
+	JMX_IMAGE=${LOCAL_CP_JMXTERM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_STANDALONE_NEWTWORKING_INTEGRATION_TEST_LOCATION}
+
+.PHONY: test-cp-zookeeper-cluster-bridged
+test-cp-zookeeper-cluster-bridged:
+	echo "test-cp-zookeeper-cluster-bridged..."
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_COMPOSE_TOOL=${IMAGES_COMPOSE_TOOL} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_ZOOKEEPER_IMAGE} \
+	JMX_IMAGE=${LOCAL_CP_JMXTERM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_BRIDGED_NEWTWORKING_INTEGRATION_TEST_LOCATION}
 
 .PHONY: test-base
 test-base: test-base-arm64 test-base-amd64
 
 .PHONY: test-cp-zookeeper
 test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64 \
-	test-cp-zookeeper-arm64-standalone test-cp-zookeeper-amd64-standalone \
-	test-cp-zookeeper-arm64-standalone-network test-cp-zookeeper-amd64-standalone-network \
-	test-cp-zookeeper-amd64-cluster-bridged test-cp-zookeeper-arm64-cluster-bridged \
-	test-cp-zookeeper-amd64-cluster-host test-cp-zookeeper-amd64-cluster-bridged
+	test-cp-zookeeper-standalone \
+	test-cp-zookeeper-standalone-network \
+	test-cp-zookeeper-cluster-bridged
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:

@@ -42,5 +42,6 @@ then
 fi
 
 dub template "/etc/confluent/docker/${COMPONENT}.properties.template" "/etc/kafka/${COMPONENT}.properties"
+
 dub template "/etc/confluent/docker/log4j.properties.template" "/etc/kafka/log4j.properties"
 dub template "/etc/confluent/docker/tools-log4j.properties.template" "/etc/kafka/tools-log4j.properties"

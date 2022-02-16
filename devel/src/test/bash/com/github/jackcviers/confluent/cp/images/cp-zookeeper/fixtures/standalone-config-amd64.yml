@@ -2,6 +2,7 @@ version: "3.9"
 services:
   kerberos:
     image: localhost:5000/jackcviers/cp-kerberos:7.0.0
+    platform: amd64
     environment:
       BOOTSTRAP: 0
     volumes:
@@ -11,10 +12,12 @@ services:
       - io.confluent.docker.testing=true
   failing-client-port:
     image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
+    platform: amd64
     labels:
       - io.confluent.docker.testing=true
   default-config:
     image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
+    platform: amd64
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     labels:
@@ -39,6 +42,7 @@ services:
       - io.confluent.docker.testing=true
   external-volumes:
     image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
+    platform: amd64
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_TICK_TIME: 2000
@@ -51,6 +55,7 @@ services:
   sasl-config:
     image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
     hostname: sasl-config
+    platform: amd64
     restart: on-failure:3
     environment:
       ZOOKEEPER_TICK_TIME: 2000
@@ -66,6 +71,7 @@ services:
       - io.confluent.docker.testing=true
   random-user:
     image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
+    platform: amd64
     user: '12345'
     environment:
       ZOOKEEPER_TICK_TIME: 2000
@@ -74,6 +80,7 @@ services:
       - io.confluent.docker.testing=true
   kitchen-sink:
     image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
+    platform: amd64
     user: '12345'
     environment:
       ZOOKEEPER_SERVER_ID: 1

@@ -1,11 +1,32 @@
+# Copyright 2022 Jack Viers
+                                                                        
+# Licensed under the Apache License, Version 2.0 (the "License");         
+# you may not use this file except in compliance with the License.        
+# You may obtain a copy of the License at                                 
+                                                                        
+#     http://www.apache.org/licenses/LICENSE-2.0                          
+                                                                        
+# Unless required by applicable law or agreed to in writing, software     
+# distributed under the License is distributed on an "AS IS" BASIS,       
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and     
+# limitations under the License.                                          
 ---
-version: '2'
-networks:
-  zk:
-    driver: bridge
+version: '3.9'
 services:
+  kerberos:
+    image: localhost:5000/jackcviers/cp-kerberos:7.0.0
+    environment:
+      BOOTSTRAP: 0
+    volumes:
+      - keytabs:/var/run/krb5
+      - /dev/urandom:/dev/random
+    networks:
+      - zk
+    labels:
+      - io.confluent.docker.testing=true
   zookeeper-1:
-    image: ${BATS_IMAGE}
+    image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_TICK_TIME: 2000
@@ -13,17 +34,18 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=*
     networks:
-    - zk
+      - zk
     ports:
-    - 22181:2181
-    - 22888:2888
-    - 23888:3888
+      - 22181:2181
+      - 22888:2888
+      - 23888:3888
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   zookeeper-2:
-    image: ${BATS_IMAGE}
+    image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_TICK_TIME: 2000
@@ -31,17 +53,18 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=*
     networks:
-    - zk
+      - zk
     ports:
-    - 32181:2181
-    - 32888:2888
-    - 33888:3888
+      - 32181:2181
+      - 32888:2888
+      - 33888:3888
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   zookeeper-3:
-    image: ${BATS_IMAGE}
+    image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
     environment:
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_TICK_TIME: 2000
@@ -49,30 +72,19 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=*
     networks:
-    - zk
+      - zk
     ports:
-    - 42181:2181
-    - 42888:2888
-    - 43888:3888
+      - 42181:2181
+      - 42888:2888
+      - 43888:3888
     labels:
-    - io.confluent.docker.testing=true
-
-  kerberos:
-    image: localhost/jackcviers/cp-kerberos:${VERSION}
-    environment:
-      BOOTSTRAP: 0
-    volumes:
-    - /mnt/${current_working_directory}/secrets:/tmp/keytab
-    - /dev/urandom:/dev/random
-    networks:
-    - zk
-    labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   zookeeper-sasl-1:
+    image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
     hostname: zookeeper-sasl-1
-    image: ${BATS_IMAGE}
     # This is required because Zookeeper can fail if kerberos is still initializing.
     restart: on-failure:3
     environment:
@@ -83,19 +95,20 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-sasl-1:2888:3888;zookeeper-sasl-2:2888:3888;zookeeper-sasl-3:2888:3888
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/secrets/bridged-1-jaas.conf
-        -Djava.security.krb5.conf=/etc/kafka/secrets/bridged-krb.conf
+        -Djava.security.krb5.conf=/etc/kafka/secrets/config_krb.conf
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dsun.security.krb5.debug=true
     volumes:
-    - /mnt/${current_working_directory}/secrets:/etc/kafka/secrets
+      - ./secrets:/etc/kafka/secrets
+      - keytabs:/var/run/krb5
     networks:
-    - zk
+      - zk
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   zookeeper-sasl-2:
     hostname: zookeeper-sasl-2
-    image: ${BATS_IMAGE}
+    image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
     restart: on-failure:3
     environment:
       ZOOKEEPER_SERVER_ID: 2
@@ -109,15 +122,16 @@ services:
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dsun.security.krb5.debug=true
     volumes:
-    - /mnt/${current_working_directory}/secrets:/etc/kafka/secrets
+      - ./secrets:/etc/kafka/secrets
+      - keytabs:/var/run/krb5
     networks:
-    - zk
+      - zk
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   zookeeper-sasl-3:
     hostname: zookeeper-sasl-3
-    image: ${BATS_IMAGE}
+    image: localhost:5000/jackcviers/cp-zookeeper:7.0.0
     restart: on-failure:3
     environment:
       ZOOKEEPER_SERVER_ID: 3
@@ -131,8 +145,19 @@ services:
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dsun.security.krb5.debug=true
     volumes:
-    - /mnt/${current_working_directory}/secrets:/etc/kafka/secrets
+      - ./secrets:/etc/kafka/secrets
+      - keytabs:/var/run/krb5
     networks:
-    - zk
+      - zk
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+volumes:
+  keytabs:
+  data:
+  kitchen-sink-data:
+  kitchen-sink-log:
+  external-data:
+  log:
+networks:
+  zk:
+    driver: bridge

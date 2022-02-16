@@ -47,6 +47,7 @@ RUN apt update \
 	&& update-alternatives --install /usr/bin/python python /usr/bin/python3 99 \
 	&& python3 -m pip install --upgrade "pip>=21,<22" \
 	&& python3 -m pip install --prefer-binary --prefix=/usr/local --upgrade ${PYTHON_CONFLUENT_DOCKER_UTILS_INSTALL_SPEC} \
+	&& python3 -m pip install install markupsafe==2.0.1 \
 	&& apt remove -y git \
 	&& apt clean \
 	&& rm -rf /tmp/* \

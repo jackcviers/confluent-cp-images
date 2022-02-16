@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG VERSION
 ARG UPSTREAM_REPOSITORY=docker.io
-
-FROM ${UPSTREAM_REPOSITORY}/jackcviers/cp-base-new:${VERSION}
+ARG VERSION
+FROM --platform=${BUILDPLATFORM} ${UPSTREAM_REPOSITORY}/jackcviers/cp-base-new:${VERSION}
 
 LABEL maintainer="jackcviers@gmail.com"
 LABEL version=${VERSION}
 LABEL name="cp-zookeeper"
-LABEL summary="Confluent Community Platform Zookeeper image."
+LABEL summary="Confluent Community Platform Compatible Zookeeper image."
 
 ENV LANG="C.UTF-8"
 ENV CUB_CLASSPATH='"/usr/share/java/cp-base-new/*"'
@@ -32,11 +31,10 @@ USER root
 RUN apt update \
 	&& apt install -y software-properties-common \
 	&& wget -qO - https://packages.confluent.io/deb/7.0/archive.key | apt-key add -\
-	&& add-apt-repository "deb https://packages.confluent.io/deb/7.0 stable main" \
+	&& add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/7.0 stable main" \
 	&& add-apt-repository "deb https://packages.confluent.io/clients/deb buster main" \
-	&& wget https://packages.confluent.io/deb/7.0/pool/main/c/confluent-kafka/confluent-kafka_7.0.1-1_all.deb \
-	&& dpkg --install confluent-kafka_7.0.1-1_all.deb \
-	&& rm -rf confluent-kafka_7.0.1-1_all.deb \
+	&& apt update \
+	&& apt install -y confluent-kafka \
 	&& mkdir -p /var/lib/zookeeper \
 	&& chown -R appuser:root /var/lib/zookeeper \
 	&& mkdir -p /var/lib/zookeeper/data \
@@ -46,21 +44,24 @@ RUN apt update \
 	/var/log/kafka \
 	/var/log/confluent \
 	/var/lib/kafka \
+	/var/run/krb5 \
 	&& chown -R appuser:root /var/lib/zookeeper/data \
 	/var/lib/zookeeper/log \
 	/etc/zookeeper/secrets \
 	/etc/kafka /var/log/kafka \
 	/var/log/confluent /var/lib/kafka \
-	&& chmod ug+w /var/lib/zookeeper/data \
+	/var/run/krb5 \
+	&& chmod -R 776 /var/lib/zookeeper/data \
 	/var/lib/zookeeper/log \
 	/etc/zookeeper/secrets \
 	/etc/kafka /var/log/kafka \
 	/var/log/confluent \
 	/var/lib/kafka \
+	/var/run/krb5 \
 	&& apt-get autoremove -y \
 	&& apt-get clean -y
 
-VOLUME ["/var/lib/zookeeper/data", "/var/lib/zookeeper/log", "/etc/zookeeper/secrets"]
+VOLUME ["/var/lib/zookeeper/data", "/var/lib/zookeeper/log", "/etc/zookeeper/secrets", "/var/run/krb5"]
 
 COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
 
