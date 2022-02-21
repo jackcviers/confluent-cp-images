@@ -42,6 +42,21 @@ health_check(){
     fi
     execute_on_service $service bash -c "cub zk-ready ${host}:${port} 60 && echo PASS || echo FAIL"
 }
+
+kafka_health_check () {
+    local service=$1
+    local port=$2
+    local num_brokers=$3
+    local host=$4
+    local security_protocol=PLAINTEXT
+
+    if [[ ! -z "$5" ]]; then
+	host=$5
+    fi
+
+    execute_on_service $service bash -c "cp /etc/kafka/kafka.properties /tmp/cub.properties && echo security.protocol=${security_protocol} >> /tmp/cub.properties && cub kafka-ready ${num_brokers} 40 -b ${host}:${port} -c /tmp/cub.properties -s ${security_protocol} && echo PASS || echo FAIL"
+}
+
 external_health_check(){
     local port=$1
     local mode=$2

@@ -97,6 +97,17 @@ DOCKER_HUB_CP_KAFKACAT_IMAGE = docker.io/${CP_KAFKACAT_VERSION_TAG}
 DOCKER_HUB_CP_KAFKACAT_LATEST = docker.io/${CP_KAFKACAT_LATEST_TAG}
 LOCAL_CP_KAFKACAT_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${CP_KAFKACAT_VERSION_TAG}
 
+CP_KAFKA_COMPONENT = cp-kafka
+CP_KAFKA_DOCKER_CONTEXT_DIR = devel/src/main/docker/cp-kafka
+CP_KAFKA_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-test.bats
+CP_KAFKA_STANDALONE_CONFIG_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-standalone-config-integration-test.bats
+CP_KAFKA_IMAGE = jackcviers/${CP_KAFKA_COMPONENT}
+CP_KAFKA_VERSION_TAG = jackcviers/${CP_KAFKA_COMPONENT}:${VERSION}
+CP_KAFKA_LATEST_TAG = jackcviers/${CP_KAFKA_COMPONENT}:${LATEST}
+DOCKER_HUB_CP_KAFKA_IMAGE = docker.io/${CP_KAFKA_VERSION_TAG}
+DOCKER_HUB_CP_KAFKA_LATEST = docker.io/${CP_KAFKA_LATEST_TAG}
+LOCAL_CP_KAFKA_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${CP_KAFKA_VERSION_TAG}
+
 DOCKER_PROTOCOL = docker://
 
 .ONESHELL:
@@ -138,6 +149,13 @@ build-cp-kafkacat:
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_KAFKACAT_DOCKER_CONTEXT_DIR}" "${CP_KAFKACAT_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
+
+.PHONY: build-cp-kafka
+build-cp-kafka: 
+	echo "build-cp-kafka..."
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_KAFKA_DOCKER_CONTEXT_DIR}" "${CP_KAFKA_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
 
 .PHONY: test-base-arm64
 test-base-arm64:
@@ -223,6 +241,24 @@ test-cp-kafkacat-arm64:
 	BATS_IMAGE=${LOCAL_CP_KAFKACAT_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKACAT_TEST_LOCATION}
 
+.PHONY: test-cp-kafka-amd64
+test-cp-kafka-amd64:
+	echo "test-cp-kafka-amd64..."
+	ARCH=${AMD_DOCKER_ARCH} \
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_KAFKA_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKA_TEST_LOCATION}
+
+.PHONY: test-cp-kafka-arm64
+test-cp-kafka-arm64:
+	echo "test-cp-kafka-arm64..."
+	ARCH=${AMD_DOCKER_ARCH} \
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_KAFKA_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKA_TEST_LOCATION}
+
 .PHONY: test-base
 test-base: test-base-arm64 test-base-amd64
 
@@ -234,6 +270,19 @@ test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64 \
 
 .PHONY: test-cp-kafkacat
 test-cp-kafkacat: test-cp-kafkacat-amd64 test-cp-kafkacat-arm64
+
+.PHONY: test-cp-kafka-standalone-config
+test-cp-kafka-standalone-config:
+	echo "test-cp-kafka-standalone-config..."
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_COMPOSE_TOOL=${IMAGES_COMPOSE_TOOL} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_KAFKA_IMAGE} \
+	JMX_IMAGE=${LOCAL_CP_JMXTERM_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKA_STANDALONE_CONFIG_INTEGRATION_TEST_LOCATION}
+
+.PHONY: test-cp-kafka
+test-cp-kafka: test-cp-kafka-amd64 test-cp-kafka-arm64 test-cp-kafka-standalone-config
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:
@@ -299,12 +348,18 @@ push-cp-zookeeper-local:
 push-cp-kafkacat-local:
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${LOCAL_CP_KAFKACAT_IMAGE}
 
+.PHONY: push-cp-kafka-local
+push-cp-kafka-local:
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${LOCAL_CP_KAFKA_IMAGE}
+
 .PHONY: build-images
+
 build-images: build-base test-base push-base-local build-cp-kerberos \
 	test-cp-kerberos push-cp-kerberos-local build-cp-jmxterm \
 	test-cp-jmxterm push-cp-jmxterm-local build-cp-zookeeper \
 	test-cp-zookeeper push-cp-zookeeper-local build-cp-kafkacat \
-	test-cp-kafkacat push-cp-kafkacat-local
+	test-cp-kafkacat push-cp-kafkacat-local build-cp-kafka \
+	test-cp-kafka push-cp-kafka-local
 
 .PHONY: start-local-registry
 start-local-registry: shutdown-local-registry
@@ -342,7 +397,10 @@ publish-images-ci:
 	${IMAGES_BUILD_TOOL} tag ${LOCAL_CP_KAFKACAT_IMAGE} ${CP_KAFKACAT_LATEST_TAG}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_KAFKACAT_VERSION_TAG}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_KAFKACAT_LATEST_TAG}
-
+	${IMAGES_BUILD_TOOL} tag ${LOCAL_CP_KAFKA_IMAGE} ${CP_KAFKA_VERSION_TAG}
+	${IMAGES_BUILD_TOOL} tag ${LOCAL_CP_KAFKA_IMAGE} ${CP_KAFKA_LATEST_TAG}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_KAFKA_VERSION_TAG}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_KAFKA_LATEST_TAG}
 
 .PHONY: ci
 ci: devel publish-images-ci
@@ -355,3 +413,5 @@ clean:
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_BASE_NEW_IMAGE}
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_KERBEROS_IMAGE}
 	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_JMXTERM_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_ZOOKEEPER_IMAGE}
+	-${IMAGES_BUILD_TOOL} ${DOCKER_REMOVE_IMAGE_COMMAND} ${LOCAL_CP_KAFKA_IMAGE}
