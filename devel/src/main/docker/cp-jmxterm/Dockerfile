@@ -25,7 +25,7 @@ LABEL summary="jmxterm image for working with confluent-platform image tests."
 USER root
 WORKDIR /opt
 
-ADD "https://s3-us-west-2.amazonaws.com/confluent-packaging-tools/jmxterm-1.0.1-uber.jar" /opt/jmxterm-1.0.1-uber.jar
+ADD --chown=appuser:appuser "https://github.com/jiaqi/jmxterm/releases/download/v1.0.2/jmxterm-1.0.2-uber.jar" /opt/jmxterm-1.0.2-uber.jar
 
 USER appuser
 WORKDIR /home/appuser

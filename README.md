@@ -75,7 +75,6 @@ Uses `nerdctl` and `containerd` to build cross-platform images for the confluent
 	function docker-compose(){
 		nerdctl compose $@
 	}
-	
 	```
 	
 	Restart Rancher Desktop each time you suspend your machine.
@@ -84,6 +83,7 @@ Uses `nerdctl` and `containerd` to build cross-platform images for the confluent
 4. jq
 4. make
 5. expect (from brew)
+
    
 #### Ubuntu
 
@@ -96,7 +96,6 @@ Uses `nerdctl` and `containerd` to build cross-platform images for the confluent
 	function docker-compose(){
 		nerdctl compose $@
 	}
-	
 	```
 	
 	Restart Rancher Desktop each time you suspend your machine.

@@ -28,7 +28,7 @@ teardown_file(){
 }
 
 @test "/opt/jmxterm-1.0.1-uber.jar should be installed" {
-    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} test -f /opt/jmxterm-1.0.1-uber.jar"
+    run bash -c "unbuffer $BATS_BUILD_TOOL exec -it cp-jmxterm-test-${ARCH} test -f /opt/jmxterm-1.0.2-uber.jar"
     assert_success
 }
 
