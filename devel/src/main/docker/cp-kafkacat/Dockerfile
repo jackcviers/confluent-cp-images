@@ -27,16 +27,10 @@ USER root
 RUN apt update \
     && apt upgrade -y \
     && apt install -y git \
-    build-essential \
-    zlib1g \
-    zlib1g-dev \
-    curl \
-    openssl \
-    libssl-dev \
-    sasl2-bin \
-    libsasl2-2 \
-    libsasl2-dev \
-    pkg-config \
-    lz4 wget \
-    tar \
-    findutils
+    kafkacat
+
+USER appuser
+
+RUN kafkacat -V
+
+CMD ["kafkacat"]

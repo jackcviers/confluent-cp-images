@@ -87,6 +87,16 @@ DOCKER_HUB_CP_ZOOKEEPER_IMAGE = docker.io/${CP_ZOOKEEPER_VERSION_TAG}
 DOCKER_HUB_CP_ZOOKEEPER_LATEST = docker.io/${CP_ZOOKEEPER_LATEST_TAG}
 LOCAL_CP_ZOOKEEPER_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${CP_ZOOKEEPER_VERSION_TAG}
 
+CP_KAFKACAT_COMPONENT = cp-kafkacat
+CP_KAFKACAT_DOCKER_CONTEXT_DIR = devel/src/main/docker/cp-kafkacat
+CP_KAFKACAT_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKACAT_COMPONENT}/${CP_KAFKACAT_COMPONENT}-test.bats
+CP_KAFKACAT_IMAGE = jackcviers/${CP_KAFKACAT_COMPONENT}
+CP_KAFKACAT_VERSION_TAG = jackcviers/${CP_KAFKACAT_COMPONENT}:${VERSION}
+CP_KAFKACAT_LATEST_TAG = jackcviers/${CP_KAFKACAT_COMPONENT}:${LATEST}
+DOCKER_HUB_CP_KAFKACAT_IMAGE = docker.io/${CP_KAFKACAT_VERSION_TAG}
+DOCKER_HUB_CP_KAFKACAT_LATEST = docker.io/${CP_KAFKACAT_LATEST_TAG}
+LOCAL_CP_KAFKACAT_IMAGE = ${LOCALHOST_DOCKER_DOMAIN}/${CP_KAFKACAT_VERSION_TAG}
+
 DOCKER_PROTOCOL = docker://
 
 .ONESHELL:
@@ -121,6 +131,13 @@ build-cp-zookeeper:
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
 	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_ZOOKEEPER_DOCKER_CONTEXT_DIR}" "${CP_ZOOKEEPER_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
+
+.PHONY: build-cp-kafkacat
+build-cp-kafkacat: 
+	echo "build-cp-kafkacat..."
+	${SOURCE_COMMAND} ${COLORS_SOURCE} \
+	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
+	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_KAFKACAT_DOCKER_CONTEXT_DIR}" "${CP_KAFKACAT_COMPONENT}" "${LOCALHOST_DOCKER_DOMAIN}"
 
 .PHONY: test-base-arm64
 test-base-arm64:
@@ -188,6 +205,24 @@ test-cp-zookeeper-cluster-bridged:
 	JMX_IMAGE=${LOCAL_CP_JMXTERM_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_ZOOKEEPER_BRIDGED_NEWTWORKING_INTEGRATION_TEST_LOCATION}
 
+.PHONY: test-cp-kafkacat-amd64
+test-cp-kafkacat-amd64:
+	echo "test-cp-kafkacat-amd64..."
+	ARCH=${AMD_DOCKER_ARCH} \
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_KAFKACAT_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKACAT_TEST_LOCATION}
+
+.PHONY: test-cp-kafkacat-arm64
+test-cp-kafkacat-arm64:
+	echo "test-cp-kafkacat-arm64..."
+	ARCH=${ARM_DOCKER_ARCH} \
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_KAFKACAT_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKACAT_TEST_LOCATION}
+
 .PHONY: test-base
 test-base: test-base-arm64 test-base-amd64
 
@@ -196,6 +231,9 @@ test-cp-zookeeper: test-cp-zookeeper-amd64 test-cp-zookeeper-arm64 \
 	test-cp-zookeeper-standalone \
 	test-cp-zookeeper-standalone-network \
 	test-cp-zookeeper-cluster-bridged
+
+.PHONY: test-cp-kafkacat
+test-cp-kafkacat: test-cp-kafkacat-amd64 test-cp-kafkacat-arm64
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:
@@ -257,11 +295,16 @@ push-cp-jmxterm-local:
 push-cp-zookeeper-local:
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${LOCAL_CP_ZOOKEEPER_IMAGE}
 
+.PHONY: push-cp-kafkacat-local
+push-cp-kafkacat-local:
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${LOCAL_CP_KAFKACAT_IMAGE}
+
 .PHONY: build-images
 build-images: build-base test-base push-base-local build-cp-kerberos \
 	test-cp-kerberos push-cp-kerberos-local build-cp-jmxterm \
 	test-cp-jmxterm push-cp-jmxterm-local build-cp-zookeeper \
-	test-cp-zookeeper push-cp-zookeeper-local
+	test-cp-zookeeper push-cp-zookeeper-local build-cp-kafkacat \
+	test-cp-kafkacat push-cp-kafkacat-local
 
 .PHONY: start-local-registry
 start-local-registry: shutdown-local-registry
@@ -276,24 +319,6 @@ shutdown-local-registry:
 devel: install-bats start-local-registry build-images shutdown-local-registry
 	${SOURCE_COMMAND} ${COLORS_SOURCE} \
 	&& log_info "Run Complete!"
-
-.PHONY: build-base-ci
-build-base-ci:
-	${SOURCE_COMMAND} ${COLORS_SOURCE} \
-	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
-	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_BASE_NEW_DOCKER_CONTEXT_DIR}" "${CP_BASE_NEW_COMPONENT}"
-
-.PHONY: build-cp-kerberos-ci
-build-cp-kerberos-ci:
-	${SOURCE_COMMAND} ${COLORS_SOURCE} \
-	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
-	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_KERBEROS_DOCKER_CONTEXT_DIR}" "${CP_KERBEROS_COMPONENT}"
-
-.PHONY: build-cp-jmxterm-ci
-build-cp-jmxterm-ci:
-	${SOURCE_COMMAND} ${COLORS_SOURCE} \
-	&& ${SOURCE_COMMAND} ${BUILD_SCRIPT_SOURCE} \
-	&& ${BUILD_COMMAND} "${IMAGES_BUILD_TOOL}" "${VERSION}" "${CP_JMXTERM_DOCKER_CONTEXT_DIR}" "${CP_JMXTERM_COMPONENT}"
 
 .PHONY: publish-images-ci
 publish-images-ci:
@@ -313,6 +338,10 @@ publish-images-ci:
 	${IMAGES_BUILD_TOOL} tag ${LOCAL_CP_ZOOKEEPER_IMAGE} ${CP_ZOOKEEPER_LATEST_TAG}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_ZOOKEEPER_VERSION_TAG}
 	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_ZOOKEEPER_LATEST_TAG}
+	${IMAGES_BUILD_TOOL} tag ${LOCAL_CP_KAFKACAT_IMAGE} ${CP_KAFKACAT_VERSION_TAG}
+	${IMAGES_BUILD_TOOL} tag ${LOCAL_CP_KAFKACAT_IMAGE} ${CP_KAFKACAT_LATEST_TAG}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_KAFKACAT_VERSION_TAG}
+	${IMAGES_BUILD_TOOL} ${DOCKER_PUSH_COMMAND} ${CP_KAFKACAT_LATEST_TAG}
 
 
 .PHONY: ci
