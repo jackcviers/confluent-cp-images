@@ -173,3 +173,8 @@ teardown_file(){
     assert_line --partial --index 5 "log4j.appender.stderr=org.apache.log4j.ConsoleAppender"
     assert_line --partial --index 6 "log4j.rootLogger=ERROR, stderr"
 }
+
+@test "the external-volumes service should be healthy" {
+    run kafka_health_check external-volumes 9092 1 localhost
+    assert_output --partial "PASS"
+}

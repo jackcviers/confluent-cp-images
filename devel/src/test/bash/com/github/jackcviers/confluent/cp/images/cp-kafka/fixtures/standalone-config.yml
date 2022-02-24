@@ -201,18 +201,20 @@ services:
       KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
       KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
-  # external-volumes:
-  #   image: localhost:5000/jackcviers/cp-kafka:7.0.0
-  #   environment:
-  #     KAFKA_BROKER_ID: 1
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/externalvolumes
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://external-volumes:9092
-  #   volumes:
-  #     - data:/var/lib/kafka/data
-  #   labels:
-  #   - io.confluent.docker.testing=true
+  external-volumes:
+    image: localhost:5000/jackcviers/cp-kafka:7.0.0
+    networks:
+      - standalone
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/externalvolumes
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://external-volumes:9092
+    volumes:
+      - external-data:/var/lib/kafka/data
+    labels:
+      - io.confluent.docker.testing=true
 
   # random-user:
   #   image: localhost:5000/jackcviers/cp-kafka:7.0.0
@@ -295,6 +297,7 @@ services:
 volumes:
   data:
   default_config_data:
+  external-data:
   keytabs:
 networks:
   standalone:
