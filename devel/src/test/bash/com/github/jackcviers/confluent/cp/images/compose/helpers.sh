@@ -51,7 +51,7 @@ kafka_health_check () {
     local security_protocol=PLAINTEXT
 
     if [[ ! -z "$5" ]]; then
-	host=$5
+        security_protocol=$5
     fi
 
     execute_on_service $service bash -c "cp /etc/kafka/kafka.properties /tmp/cub.properties && echo security.protocol=${security_protocol} >> /tmp/cub.properties && cub kafka-ready ${num_brokers} 40 -b ${host}:${port} -c /tmp/cub.properties -s ${security_protocol} && echo PASS || echo FAIL"

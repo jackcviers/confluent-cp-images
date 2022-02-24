@@ -73,11 +73,6 @@ teardown_file(){
     assert_output --partial "KAFKA_SSL_KEYSTORE_FILENAME is required"
 }
 
-@test "KAFKA_SSL_KEYSTORE_CREDENTIALS is required should be in the logs of failing-config-ssl-keystore-password" {
-    run ${BATS_COMPOSE_TOOL} -f ${COMPOSE_FILE} logs failing-config-ssl-keystore-password
-    assert_output --partial "KAFKA_SSL_KEYSTORE_CREDENTIALS is required"
-}
-
 @test "KAFKA_SSL_KEY_CREDENTIALS is required should be in the logs of failing-config-ssl-key-password" {
     run ${BATS_COMPOSE_TOOL} -f ${COMPOSE_FILE} logs failing-config-ssl-key-password
     assert_output --partial "KAFKA_SSL_KEY_CREDENTIALS is required"
@@ -107,7 +102,7 @@ teardown_file(){
 }
 
 @test "default-config kafka check should pass from kafkacat" {
-    run bash -c "unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=fixtures_standalone --name cp-kafka-standalone-default-config-kafkacat-check ${KAFKACAT_IMAGE} bash -c \"kafkacat -L -b default-config:9092 -J\" | jq -cr '.brokers[] | select(.id=\"1001\")'"
+    run bash -c "unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=fixtures_default --name cp-kafka-standalone-default-config-kafkacat-check ${KAFKACAT_IMAGE} bash -c \"kafkacat -L -b default-config:9092 -J\" | jq -cr '.brokers[] | select(.id=\"1001\")'"
     assert_output --partial "{\"id\":1001,\"name\":\"default-config:9092\"}"
 }
 
@@ -200,4 +195,9 @@ teardown_file(){
     assert_line --partial --index 4 "listeners=PLAINTEXT://0.0.0.0:9092"
     assert_line --partial --index 5 "log.dirs=/var/lib/kafka/data"
     assert_line --partial --index 6 "zookeeper.connect=zookeeper:2181/kitchensink"
+}
+
+@test "the ssl-config service should be healthy" {
+    run kafka_health_check ssl-config 9092 1 ssl-config SSL
+    assert_output --partial "PASS"
 }
