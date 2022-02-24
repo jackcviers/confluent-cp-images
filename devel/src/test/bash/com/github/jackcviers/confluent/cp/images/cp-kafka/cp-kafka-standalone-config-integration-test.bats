@@ -108,3 +108,28 @@ teardown_file(){
     run bash -c "unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=fixtures_standalone --name cp-kafka-standalone-default-config-kafkacat-check ${KAFKACAT_IMAGE} bash -c \"kafkacat -L -b default-config:9092 -J\" | jq -cr '.brokers[] | select(.id=\"1001\")'"
     assert_output --partial "{\"id\":1001,\"name\":\"default-config:9092\"}"
 }
+
+@test "default-config kafka log properties should be correct" {
+    run execute_on_service default-config bash -c "cat /etc/kafka/log4j.properties | sort"
+    assert_line --partial --index 4 "log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n"
+    assert_line --partial --index 5 "log4j.appender.stdout.layout=org.apache.log4j.PatternLayout"
+    assert_line --partial --index 6 "log4j.appender.stdout=org.apache.log4j.ConsoleAppender"
+    assert_line --partial --index 7 "log4j.logger.kafka.authorizer.logger=WARN"
+    assert_line --partial --index 8 "log4j.logger.kafka.controller=TRACE"
+    assert_line --partial --index 9 "log4j.logger.kafka.log.LogCleaner=INFO"
+    assert_line --partial --index 10 "log4j.logger.kafka.network.RequestChannel$=WARN"
+    assert_line --partial --index 11 "log4j.logger.kafka.producer.async.DefaultEventHandler=DEBUG"
+    assert_line --partial --index 12 "log4j.logger.kafka.request.logger=WARN"
+    assert_line --partial --index 13 "log4j.logger.kafka=INFO"
+    assert_line --partial --index 14 "log4j.logger.state.change.logger=TRACE"
+    assert_line --partial --index 15 "log4j.rootLogger=INFO, stdout"
+}
+
+@test "default-config kafka tool log properties should be correct" {
+    run execute_on_service default-config bash -c "cat cat /etc/kafka/tools-log4j.properties | sort"
+    assert_line --partial --index 3 "log4j.appender.stderr.Target=System.err"
+    assert_line --partial --index 4 "log4j.appender.stderr.layout.ConversionPattern=[%d] %p %m (%c)%n"
+    assert_line --partial --index 5 "log4j.appender.stderr.layout=org.apache.log4j.PatternLayout"
+    assert_line --partial --index 6 "log4j.appender.stderr=org.apache.log4j.ConsoleAppender"
+    assert_line --partial --index 7 "log4j.rootLogger=WARN, stderr"
+}
