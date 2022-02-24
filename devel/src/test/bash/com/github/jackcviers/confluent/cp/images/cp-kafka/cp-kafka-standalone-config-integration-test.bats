@@ -190,3 +190,14 @@ teardown_file(){
     run kafka_health_check kitchen-sink 9092 1 localhost
     assert_output --partial "PASS"
 }
+
+@test "the kitchen-sink kafka properties should be correct" {
+    run execute_on_service kitchen-sink bash -c 'cat /etc/kafka/kafka.properties | sort'
+    assert_line --partial --index 0 "advertised.listeners=PLAINTEXT://kitchen-sink:9092"
+    assert_line --partial --index 1 "broker.id=1"
+    assert_line --partial --index 2 "confluent.support.customer.id=c0"
+    assert_line --partial --index 3 "confluent.support.metrics.enable=false"
+    assert_line --partial --index 4 "listeners=PLAINTEXT://0.0.0.0:9092"
+    assert_line --partial --index 5 "log.dirs=/var/lib/kafka/data"
+    assert_line --partial --index 6 "zookeeper.connect=zookeeper:2181/kitchensink"
+}
