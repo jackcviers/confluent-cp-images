@@ -148,7 +148,7 @@ teardown_file(){
     assert_line --partial --index 4 "zookeeper.connect=zookeeper:2181/fullconfig"
 }
 
-@test "kafka logging should be configured correctly" {
+@test "full-config kafka logging should be configured correctly" {
     run execute_on_service full-config bash -c 'cat /etc/kafka/log4j.properties | sort'
     assert_line --partial --index 4 "log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n"
     assert_line --partial --index 5 "log4j.appender.stdout.layout=org.apache.log4j.PatternLayout"
@@ -163,4 +163,13 @@ teardown_file(){
     assert_line --partial --index 14 "log4j.logger.kafka=INFO"
     assert_line --partial --index 15 "log4j.logger.state.change.logger=TRACE"
     assert_line --partial --index 16 "log4j.rootLogger=WARN, stdout"
+}
+
+@test "full-config kafak tool logging should be configured correctly" {
+    run execute_on_service full-config bash -c 'cat /etc/kafka/tools-log4j.properties | sort'
+    assert_line --partial --index 2 "log4j.appender.stderr.Target=System.err"
+    assert_line --partial --index 3 "log4j.appender.stderr.layout.ConversionPattern=[%d] %p %m (%c)%n"
+    assert_line --partial --index 4 "log4j.appender.stderr.layout=org.apache.log4j.PatternLayout"
+    assert_line --partial --index 5 "log4j.appender.stderr=org.apache.log4j.ConsoleAppender"
+    assert_line --partial --index 6 "log4j.rootLogger=ERROR, stderr"
 }
