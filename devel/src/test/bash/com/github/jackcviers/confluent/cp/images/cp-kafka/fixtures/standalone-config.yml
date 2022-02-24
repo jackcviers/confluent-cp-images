@@ -226,19 +226,21 @@ services:
     labels:
       - io.confluent.docker.testing=true
 
-  # kitchen-sink:
-  #   image: localhost:5000/jackcviers/cp-kafka:7.0.0
-  #   environment:
-  #     KAFKA_BROKER_ID: 1
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/kitchensink
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kitchen-sink:9092
-  #     CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
-  #     CONFLUENT_SUPPORT_CUSTOMER_ID: c0
-  #   volumes:
-  #     - data:/var/lib/kafka/data
-  #   user: '12345'
-  #   labels:
-  #   - io.confluent.docker.testing=true
+  kitchen-sink:
+    image: localhost:5000/jackcviers/cp-kafka:7.0.0
+    networks:
+      - standalone
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/kitchensink
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kitchen-sink:9092
+      CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: c0
+    volumes:
+      - ./kitchen-sink/data:/var/lib/kafka/data
+    user: '12345'
+    labels:
+    - io.confluent.docker.testing=true
 
   # ssl-config:
   #   image: localhost:5000/jackcviers/cp-kafka:7.0.0
