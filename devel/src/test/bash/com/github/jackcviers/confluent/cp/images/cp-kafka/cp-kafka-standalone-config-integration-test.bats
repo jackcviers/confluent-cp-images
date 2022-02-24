@@ -147,3 +147,20 @@ teardown_file(){
     assert_line --partial --index 3 "log.dirs=/var/lib/kafka/data"
     assert_line --partial --index 4 "zookeeper.connect=zookeeper:2181/fullconfig"
 }
+
+@test "kafka logging should be configured correctly" {
+    run execute_on_service full-config bash -c 'cat /etc/kafka/log4j.properties | sort'
+    assert_line --partial --index 4 "log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n"
+    assert_line --partial --index 5 "log4j.appender.stdout.layout=org.apache.log4j.PatternLayout"
+    assert_line --partial --index 6 "log4j.appender.stdout=org.apache.log4j.ConsoleAppender"
+    assert_line --partial --index 7 "log4j.logger.kafka.authorizer.logger=WARN"
+    assert_line --partial --index 8 "log4j.logger.kafka.controller=WARN"
+    assert_line --partial --index 9 "log4j.logger.kafka.foo.bar=DEBUG"
+    assert_line --partial --index 10 "log4j.logger.kafka.log.LogCleaner=INFO"
+    assert_line --partial --index 11 "log4j.logger.kafka.network.RequestChannel$=WARN"
+    assert_line --partial --index 12 "log4j.logger.kafka.producer.async.DefaultEventHandler=DEBUG"
+    assert_line --partial --index 13 "log4j.logger.kafka.request.logger=WARN"
+    assert_line --partial --index 14 "log4j.logger.kafka=INFO"
+    assert_line --partial --index 15 "log4j.logger.state.change.logger=TRACE"
+    assert_line --partial --index 16 "log4j.rootLogger=WARN, stdout"
+}
