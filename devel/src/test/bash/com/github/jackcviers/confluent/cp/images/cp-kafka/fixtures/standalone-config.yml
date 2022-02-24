@@ -1,5 +1,3 @@
-#!/usr/bin/env bats
-
 # Copyright 2022 Jack Viers
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -212,19 +210,21 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/externalvolumes
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://external-volumes:9092
     volumes:
-      - external-data:/var/lib/kafka/data
+      - ./external-volumes/data:/var/lib/kafka/data
     labels:
       - io.confluent.docker.testing=true
 
-  # random-user:
-  #   image: localhost:5000/jackcviers/cp-kafka:7.0.0
-  #   environment:
-  #     KAFKA_BROKER_ID: 1
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/randomuser
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://random-user:9092
-  #   user: '12345'
-  #   labels:
-  #   - io.confluent.docker.testing=true
+  random-user:
+    image: localhost:5000/jackcviers/cp-kafka:7.0.0
+    networks:
+      - standalone
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/randomuser
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://random-user:9092
+    user: '12345'
+    labels:
+      - io.confluent.docker.testing=true
 
   # kitchen-sink:
   #   image: localhost:5000/jackcviers/cp-kafka:7.0.0

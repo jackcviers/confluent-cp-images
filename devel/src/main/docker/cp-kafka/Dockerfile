@@ -37,7 +37,8 @@ RUN apt install -y software-properties-common \
 
 RUN mkdir -p /var/lib/${COMPONENT}/data /etc/${COMPONENT}/secrets /var/run/krb5 \
     && chown -R appuser:root /var/lib/${COMPONENT} /etc/${COMPONENT} /var/log/${COMPONENT} /var/log/confluent /var/lib/zookeeper /var/run/krb5 \
-    && chmod -R 776 /var/lib/${COMPONENT} /etc/${COMPONENT} /var/log/${COMPONENT} /var/log/confluent /var/lib/zookeeper /var/run/krb5
+    && chmod -R 776 /var/lib/${COMPONENT} /etc/${COMPONENT} /var/log/${COMPONENT} /var/log/confluent /var/lib/zookeeper /var/run/krb5 \
+    && chmod -R 777 /usr/share/java/ # necessary to run as random user
 
 COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
 

@@ -22,6 +22,7 @@ COMPOSE_FILE="./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp
 source ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/compose/helpers.sh
 
 setup_file(){
+    mkdir -p ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/external-volumes/data
     run ${BATS_COMPOSE_TOOL} -f ${COMPOSE_FILE} up -d
     kadmin_keytab_create kafka sasl-ssl-config broker1
     assert_success
@@ -29,6 +30,7 @@ setup_file(){
 
 teardown_file(){
     ${BATS_COMPOSE_TOOL} -f ${COMPOSE_FILE} down
+    rm -rf ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/external-volumes/data
 }
 
 @test "zookeeper should be healthy" {
@@ -176,5 +178,10 @@ teardown_file(){
 
 @test "the external-volumes service should be healthy" {
     run kafka_health_check external-volumes 9092 1 localhost
+    assert_output --partial "PASS"
+}
+
+@test "the random-user service should be healthy" {
+    run kafka_health_check random-user 9092 1 localhost
     assert_output --partial "PASS"
 }
