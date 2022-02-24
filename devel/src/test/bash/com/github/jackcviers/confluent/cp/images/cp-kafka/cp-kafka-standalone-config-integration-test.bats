@@ -138,3 +138,12 @@ teardown_file(){
     run kafka_health_check full-config 9092 1 localhost
     assert_output --partial "PASS"
 }
+
+@test "full-config kafka properties sohuld be correct" {
+    run execute_on_service full-config bash -c 'cat /etc/kafka/kafka.properties | sort'
+    assert_line --partial --index 0 "advertised.listeners=PLAINTEXT://full-config:9092"
+    assert_line --partial --index 1 "broker.id=1"
+    assert_line --partial --index 2 "listeners=PLAINTEXT://0.0.0.0:9092"
+    assert_line --partial --index 3 "log.dirs=/var/lib/kafka/data"
+    assert_line --partial --index 4 "zookeeper.connect=zookeeper:2181/fullconfig"
+}
