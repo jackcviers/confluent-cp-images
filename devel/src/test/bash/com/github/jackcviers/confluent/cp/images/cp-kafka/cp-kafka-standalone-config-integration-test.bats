@@ -133,3 +133,8 @@ teardown_file(){
     assert_line --partial --index 6 "log4j.appender.stderr=org.apache.log4j.ConsoleAppender"
     assert_line --partial --index 7 "log4j.rootLogger=WARN, stderr"
 }
+
+@test "full-config service should be healthy" {
+    run kafka_health_check full-config 9092 1 localhost
+    assert_output --partial "PASS"
+}
