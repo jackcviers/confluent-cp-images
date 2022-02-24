@@ -103,3 +103,8 @@ teardown_file(){
     assert_line --partial --index 2 "log.dirs=/var/lib/kafka/data"
     assert_line --partial --index 3 "zookeeper.connect=zookeeper:2181/defaultconfig"
 }
+
+@test "default-config kafka check should pass from kafkacat" {
+    run bash -c "unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=fixtures_standalone --name cp-kafka-standalone-default-config-kafkacat-check ${KAFKACAT_IMAGE} bash -c \"kafkacat -L -b default-config:9092 -J\" | jq -cr '.brokers[] | select(.id=\"1001\")'"
+    assert_output --partial "{\"id\":1001,\"name\":\"default-config:9092\"}"
+}
