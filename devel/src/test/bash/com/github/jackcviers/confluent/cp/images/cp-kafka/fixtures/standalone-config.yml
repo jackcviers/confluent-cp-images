@@ -249,30 +249,38 @@ services:
     labels:
     - io.confluent.docker.testing=true
 
-  # sasl-ssl-config:
-  #   image: localhost:5000/jackcviers/cp-kafka:7.0.0
-  #   environment:
-  #     KAFKA_BROKER_ID: 1
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/sslsaslconfig
-  #     KAFKA_ADVERTISED_LISTENERS: SSL://sasl-ssl-config:9092,SASL_SSL://sasl-ssl-config:9094
-  #     KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker1.keystore.jks
-  #     KAFKA_SSL_KEYSTORE_CREDENTIALS: broker1_keystore_creds
-  #     KAFKA_SSL_KEY_CREDENTIALS: broker1_sslkey_creds
-  #     KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.broker1.truststore.jks
-  #     KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker1_truststore_creds
-  #     KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SASL_SSL
-  #     KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: GSSAPI
-  #     KAFKA_SASL_ENABLED_MECHANISMS: GSSAPI
-  #     KAFKA_SASL_KERBEROS_SERVICE_NAME: kafka
-  #     ZOOKEEPER_SASL_ENABLED: "FALSE"
-  #     KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/secrets/config_server1_jaas.conf
-  #       -Djava.security.krb5.conf=/etc/kafka/secrets/config_krb.conf
-  #       -Dsun.security.krb5.debug=true
-  #   volumes:
-  #     - ./secrets:/etc/kafka/secrets
-  #     - keytabs:/var/run/krb5
-  #   labels:
-  #     - io.confluent.docker.testing=true
+  sasl-ssl-config:
+    image: localhost:5000/jackcviers/cp-kafka:7.0.0
+    hostname: sasl-ssl-config
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/sslsaslconfig
+      KAFKA_ADVERTISED_LISTENERS: SSL://sasl-ssl-config:9092,SASL_SSL://sasl-ssl-config:9094
+      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka.sasl-ssl-config.keystore.jks
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.sasl-ssl-config.keystore.jks
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: broker1_keystore_creds
+      KAFKA_SSL_KEY_CREDENTIALS: broker1_sslkey_creds
+      KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.sasl-ssl-config.truststore.jks
+      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/kafka.sasl-ssl-config.truststore.jks
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker1_truststore_creds
+      KAFKA_SSL_TRUSTSTORE_PASSWORD: confluent
+      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SASL_SSL
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: GSSAPI
+      KAFKA_SASL_ENABLED_MECHANISMS: GSSAPI
+      KAFKA_SASL_KERBEROS_SERVICE_NAME: kafka
+      ZOOKEEPER_SASL_ENABLED: "FALSE"
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/secrets/config_server1_jaas.conf
+        -Djava.security.krb5.conf=/etc/kafka/secrets/config_krb.conf
+        -Dsun.security.krb5.debug=true
+      CLIENT_KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.sasl-ssl-config-client.truststore.jks
+      CLIENT_KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker1_truststore_creds
+      CERT_VALIDITY_DAYS: 90
+    command: [/etc/kafka/secrets/create-certs-ssl-config.sh]
+    volumes:
+      - ./secrets:/etc/kafka/secrets
+      - keytabs:/var/run/krb5
+    labels:
+      - io.confluent.docker.testing=true
 
 volumes:
   data:

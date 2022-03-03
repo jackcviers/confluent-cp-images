@@ -221,3 +221,8 @@ teardown_file(){
     assert_line --partial --index 14 "ssl.truststore.password=confluent"
     assert_line --partial --index 15 "zookeeper.connect=zookeeper:2181/sslconfig"
 }
+
+@test "the sasl-ssl-config service should be healthy" {
+    run kafka_health_check sasl-ssl-config 9094 1 sasl-ssl-config SASL_SSL
+    assert_output --partial "PASS"
+}
