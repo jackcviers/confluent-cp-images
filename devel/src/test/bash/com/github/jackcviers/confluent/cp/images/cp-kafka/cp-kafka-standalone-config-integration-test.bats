@@ -226,3 +226,26 @@ teardown_file(){
     run kafka_health_check sasl-ssl-config 9094 1 sasl-ssl-config SASL_SSL
     assert_output --partial "PASS"
 }
+
+@test "the sasl-ssl-config kafka properties should be correct" {
+    run execute_on_service sasl-ssl-config bash -c "cat /etc/kafka/kafka.properties | sort"
+    assert_line --partial --index 0 "advertised.listeners=SSL://sasl-ssl-config:9092,SASL_SSL://sasl-ssl-config:9094"
+    assert_line --partial --index 1 "broker.id=1"
+    assert_line --partial --index 2 "listeners=SSL://0.0.0.0:9092,SASL_SSL://0.0.0.0:9094"
+    assert_line --partial --index 3 "log.dirs=/var/lib/kafka/data"
+    assert_line --partial --index 4 "sasl.enabled.mechanisms=GSSAPI"
+    assert_line --partial --index 5 "sasl.kerberos.service.name=kafka"
+    assert_line --partial --index 6 "sasl.mechanism.inter.broker.protocol=GSSAPI"
+    assert_line --partial --index 7 "security.inter.broker.protocol=SASL_SSL"
+    assert_line --partial --index 8 "ssl.key.credentials=broker1_sslkey_creds"
+    assert_line --partial --index 9 "ssl.key.password=confluent"
+    assert_line --partial --index 10 "ssl.keystore.credentials=broker1_keystore_creds"
+    assert_line --partial --index 11 "ssl.keystore.filename=kafka.sasl-ssl-config.keystore.jks"
+    assert_line --partial --index 12 "ssl.keystore.location=/etc/kafka/secrets/kafka.sasl-ssl-config.keystore.jks"
+    assert_line --partial --index 13 "ssl.keystore.password=confluent"
+    assert_line --partial --index 14 "ssl.truststore.credentials=broker1_truststore_creds"
+    assert_line --partial --index 15 "ssl.truststore.filename=kafka.sasl-ssl-config.truststore.jks"
+    assert_line --partial --index 16 "ssl.truststore.location=/etc/kafka/secrets/kafka.sasl-ssl-config.truststore.jks"
+    assert_line --partial --index 17 "ssl.truststore.password=confluent"
+    assert_line --partial --index 18 "zookeeper.connect=zookeeper:2181/sslsaslconfig"
+}

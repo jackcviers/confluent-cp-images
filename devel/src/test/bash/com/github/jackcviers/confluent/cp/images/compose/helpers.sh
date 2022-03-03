@@ -78,3 +78,15 @@ jmx_check(){
     unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=${mode} ${JMX_IMAGE} bash -c "echo 'get -b org.apache.ZooKeeperService:name0=StandaloneServer_port${client_port} Version' | java -jar /opt/jmxterm-1.0.2-uber.jar -l ${host}:${jmx_port} -n -v silent "
     # ${BATS_BUILD_TOOL} run --rm --network=${mode} ${JMX_IMAGE} bash -c "java -jar /opt/jmxterm-1.0.1-uber.jar -l \"localhost:9999\" 'get *'"
 }
+
+kafka_jmx_check(){
+    local port=$1
+    local jmx_hostname=$2
+    local mode=host
+    if [[ ! -z "$3" ]];
+    then
+	mode=$3
+    fi
+    # unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=${mode} ${JMX_IMAGE} bash -c "echo 'get -b kafka.server:id=1,type=app-info Version' | java -jar /opt/jmxterm-1.0.2-uber.jar -l ${jmx_hostname}:${port} -n -v silent "
+    unbuffer ${BATS_BUILD_TOOL} run --rm --network=host ${JMX_IMAGE} bash -c "java -jar /opt/jmxterm-1.0.2-uber.jar -l \"localhost:39999\" 'get *'"
+}

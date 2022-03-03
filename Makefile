@@ -101,6 +101,7 @@ CP_KAFKA_COMPONENT = cp-kafka
 CP_KAFKA_DOCKER_CONTEXT_DIR = devel/src/main/docker/cp-kafka
 CP_KAFKA_TEST_LOCATION = ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-test.bats
 CP_KAFKA_STANDALONE_CONFIG_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-standalone-config-integration-test.bats
+CP_KAFKA_STANDALONE_NETWORKING_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-standalone-networking-integration-test.bats
 CP_KAFKA_IMAGE = jackcviers/${CP_KAFKA_COMPONENT}
 CP_KAFKA_VERSION_TAG = jackcviers/${CP_KAFKA_COMPONENT}:${VERSION}
 CP_KAFKA_LATEST_TAG = jackcviers/${CP_KAFKA_COMPONENT}:${LATEST}
@@ -282,8 +283,19 @@ test-cp-kafka-standalone-config:
 	KAFKACAT_IMAGE=${LOCAL_CP_KAFKACAT_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKA_STANDALONE_CONFIG_INTEGRATION_TEST_LOCATION}
 
+.PHONY: test-cp-kafka-standalone-networking
+test-cp-kafka-standalone-networking:
+	echo "test-cp-kafka-standalone-networking..."
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_COMPOSE_TOOL=${IMAGES_COMPOSE_TOOL} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_KAFKA_IMAGE} \
+	JMX_IMAGE=${LOCAL_CP_JMXTERM_IMAGE} \
+	KAFKACAT_IMAGE=${LOCAL_CP_KAFKACAT_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKA_STANDALONE_NETWORKING_INTEGRATION_TEST_LOCATION}
+
 .PHONY: test-cp-kafka
-test-cp-kafka: test-cp-kafka-amd64 test-cp-kafka-arm64 test-cp-kafka-standalone-config
+test-cp-kafka: test-cp-kafka-amd64 test-cp-kafka-arm64 test-cp-kafka-standalone-config test-cp-kafka-standalone-networking
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:
