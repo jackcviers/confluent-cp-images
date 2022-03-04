@@ -17,3 +17,5 @@ buildNumber.properties
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.sasl-ssl-config-client.truststore.jks
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.sasl-ssl-config.keystore.jks
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.sasl-ssl-config.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.client1.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.client2.truststore.jks
