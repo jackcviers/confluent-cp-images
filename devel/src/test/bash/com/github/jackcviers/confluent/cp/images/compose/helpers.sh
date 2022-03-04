@@ -90,3 +90,13 @@ kafka_jmx_check(){
     # unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=${mode} ${JMX_IMAGE} bash -c "echo 'get -b kafka.server:id=1,type=app-info Version' | java -jar /opt/jmxterm-1.0.2-uber.jar -l ${jmx_hostname}:${port} -n -v silent "
     unbuffer ${BATS_BUILD_TOOL} run --rm --network=host ${JMX_IMAGE} bash -c "java -jar /opt/jmxterm-1.0.2-uber.jar -l \"localhost:39999\" 'get *'"
 }
+
+produce_n_plain_messages(){
+    local topic=$1
+    local brokers=$2
+    local messages=$3
+    local network=$4
+    local zookeeper_servers=$5
+
+    unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=${network} --name kafka-bridged-plain-producer-${messages} -e "KAFKA_ZOOKEEPER_CONNECT=${zookeeper_servers}" -e "KAFKA_TOOLS_LOG4J_LOGLEVEL=DEBUG" localhost:5000/jackcviers/cp-kafka:7.0.0 bash -c "dub template /etc/confluent/docker/tools-log4j.properties.template /etc/kafka/tools-log4j.properties && kafka-topics --create --topic ${topic} --partitions 1 --replication-factor 3 --if-not-exists --bootstrap-server ${brokers} && seq ${messages} | kafka-console-producer --broker-list ${brokers} --topic ${topic} && echo PRODUCED ${messages} messages. && kafka-console-consumer --bootstrap-server ${brokers} --topic foo --from-beginning --max-messages ${messages}"
+}
