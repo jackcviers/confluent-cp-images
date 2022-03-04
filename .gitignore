@@ -19,3 +19,10 @@ buildNumber.properties
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.sasl-ssl-config.truststore.jks
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.client1.truststore.jks
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.client2.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.broker1.keystore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.broker1.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.broker2.keystore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.broker2.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.broker3.keystore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.broker3.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.client3.truststore.jks
