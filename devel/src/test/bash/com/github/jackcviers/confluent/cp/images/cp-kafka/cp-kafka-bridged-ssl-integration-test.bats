@@ -41,4 +41,7 @@ teardown_file(){
     assert_output --partial "PASS"
 }
 
-
+@test "kakfa-ssl-1 should pass the the kafkacat ssl check" {
+    run kafka_ssl_check kafka-ssl-1 9093./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets:/etc/kafka/secrets fixtures_zk
+    
+}

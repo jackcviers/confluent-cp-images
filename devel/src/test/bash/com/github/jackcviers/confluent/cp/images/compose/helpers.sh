@@ -100,3 +100,22 @@ produce_n_plain_messages(){
 
     unbuffer ${BATS_BUILD_TOOL} run --rm -it --network=${network} --name kafka-bridged-plain-producer-${messages} -e "KAFKA_ZOOKEEPER_CONNECT=${zookeeper_servers}" -e "KAFKA_TOOLS_LOG4J_LOGLEVEL=DEBUG" localhost:5000/jackcviers/cp-kafka:7.0.0 bash -c "dub template /etc/confluent/docker/tools-log4j.properties.template /etc/kafka/tools-log4j.properties && kafka-topics --create --topic ${topic} --partitions 1 --replication-factor 3 --if-not-exists --bootstrap-server ${brokers} && seq ${messages} | kafka-console-producer --broker-list ${brokers} --topic ${topic} && echo PRODUCED ${messages} messages. && kafka-console-consumer --bootstrap-server ${brokers} --topic foo --from-beginning --max-messages ${messages}"
 }
+
+
+kafka_ssl_check(){
+    local host=$1
+    local port=$2
+    local volume=$3
+    local network=host
+
+    if [ -z "$4" ];then
+	network=$4
+    fi
+
+    ${BATS_BUILD_TOOL} run --rm -it network=${network} localhost:5000/jackcviers/cp-kafkacat:7.0.0 bash -c """kafkacat -X security.protocol=ssl \
+      -X ssl.ca.location=/etc/kafka/secrets/snakeoil-ca-1.crt \
+      -X ssl.certificate.location=/etc/kafka/secrets/kafkacat-ca1-signed.pem \
+      -X ssl.key.location=/etc/kafka/secrets/kafkacat.client.key \
+      -X ssl.key.password=confluent \
+      -L -b ${host}:${port} -J"""
+}
