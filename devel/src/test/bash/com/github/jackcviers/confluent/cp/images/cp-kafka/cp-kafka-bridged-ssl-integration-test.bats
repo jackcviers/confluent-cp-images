@@ -29,22 +29,6 @@ setup_file(){
 
 teardown_file(){
     ${BATS_COMPOSE_TOOL} -f ${COMPOSE_FILE} down
-    cd ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets
-    rm -rf ssl-cluster-bridged-ca-key-1 ssl-cluster-bridged-ca-key-2 \
-       ssl-cluster-bridged-ca-key-3 ssl-cluster-bridged-ca-cert-1 \
-       ssl-cluster-bridged-ca-cert-2 ssl-cluster-bridged-ca-cert-3 \
-       ssl-cluster-bridged-broker1-keystore.jks \
-       ssl-cluster-bridged-broker2-keystore.jks \
-       ssl-cluster-bridged-broker3-keystore.jks \
-       ssl-cluster-bridged-server-truststore.jks \
-       ssl-cluster-bridged-client-trustore.jks \
-       ssl-cluster-bridged-server-cert-file-1 \
-       ssl-cluster-bridged-server-cert-file-2 \
-       ssl-cluster-bridged-server-cert-file-3 \
-       ssl-cluster-bridged-server-cert-file-signed-1 \
-       ssl-cluster-bridged-server-cert-file-signed-2 \
-       ssl-cluster-bridged-server-cert-file-signed-3
-    cd -
 }
 
 @test "zookeeper should be healthy" {
