@@ -22,18 +22,17 @@ COMPOSE_FILE="./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp
 source ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/compose/helpers.sh
 
 setup_file(){
+    # uncomment these when the cert expires
+    cd ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/
+    ./create-certs.sh
+    cd -
     run ${BATS_COMPOSE_TOOL} -f ${COMPOSE_FILE} up -d
-    sleep 40
-    assert_success
+    run execute_on_service zookeeper-1 bash -c 'cub zk-ready zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 40 && echo PASS || echo FAIL'
+    assert_output --partial "PASS"
 }
 
 teardown_file(){
     ${BATS_COMPOSE_TOOL} -f ${COMPOSE_FILE} down
-}
-
-@test "zookeeper should be healthy" {
-    run execute_on_service zookeeper-1 bash -c 'cub zk-ready zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 40 && echo PASS || echo FAIL'
-    assert_output --partial "PASS"
 }
 
 @test "kafka-ssl-1 is healthy" {
@@ -42,6 +41,33 @@ teardown_file(){
 }
 
 @test "kakfa-ssl-1 should pass the the kafkacat ssl check" {
-    run kafka_ssl_check kafka-ssl-1 9093./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets:/etc/kafka/secrets fixtures_zk
-    
+    run execute_on_service kafkacat-ssl kafkacat -X security.protocol=ssl \
+	-X ssl.ca.location=/etc/kafka/secrets/snakeoil-ca-1.crt \
+	-X ssl.certificate.location=/etc/kafka/secrets/kafkacat-ca1-signed.pem \
+	-X ssl.key.location=/etc/kafka/secrets/kafkacat.client.key \
+	-X ssl.endpoint.identification.algorithm="None" \
+	-X ssl.key.password=confluent -L -b kafka-ssl-1:9093 -J -d broker
+    assert_output --partial "{\"id\":1,\"name\":\"kafka-ssl-1:9093\"}"
+
 }
+
+@test "kakfa-ssl-2 should pass the the kafkacat ssl check" {
+    run execute_on_service kafkacat-ssl kafkacat -X security.protocol=ssl \
+	-X ssl.ca.location=/etc/kafka/secrets/snakeoil-ca-1.crt \
+	-X ssl.certificate.location=/etc/kafka/secrets/kafkacat-ca1-signed.pem \
+	-X ssl.key.location=/etc/kafka/secrets/kafkacat.client.key \
+	-X ssl.endpoint.identification.algorithm="None" \
+	-X ssl.key.password=confluent -L -b kafka-ssl-1:9093 -J -d broker
+    assert_output --partial "{\"id\":2,\"name\":\"kafka-ssl-2:9093\"}"
+}
+
+@test "kakfa-ssl-3 should pass the the kafkacat ssl check" {
+    run execute_on_service kafkacat-ssl kafkacat -X security.protocol=ssl \
+	-X ssl.ca.location=/etc/kafka/secrets/snakeoil-ca-1.crt \
+	-X ssl.certificate.location=/etc/kafka/secrets/kafkacat-ca1-signed.pem \
+	-X ssl.key.location=/etc/kafka/secrets/kafkacat.client.key \
+	-X ssl.endpoint.identification.algorithm="None" \
+	-X ssl.key.password=confluent -L -b kafka-ssl-1:9093 -J -d broker
+    assert_output --partial "{\"id\":3,\"name\":\"kafka-ssl-3:9093\"}"
+}
+

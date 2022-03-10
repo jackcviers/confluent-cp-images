@@ -80,25 +80,23 @@ services:
     networks:
       - default
       - zk
-    command: [/etc/kafka/secrets/create-certs-cluster-ssl-config.sh]
+    # command: [/etc/kafka/secrets/create-certs-cluster-ssl-config.sh]
     environment:
       MASTER_SSL: "1"
       KAFKA_BROKER_ID: 1
       KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181/ssl
       KAFKA_ADVERTISED_LISTENERS: SSL://kafka-ssl-1:9093
-      KAFKA_SSL_KEYSTORE_FILENAME: ssl-cluster-bridged-keystore-1.jks
-      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/ssl-cluster-bridged-keystore-1.jks
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker1.keystore.jks
+      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka.broker1.keystore.jks
       KAFKA_SSL_KEYSTORE_PASSWORD: confluent
       KAFKA_SSL_KEYSTORE_CREDENTIALS: broker1_keystore_creds
       KAFKA_SSL_KEY_CREDENTIALS: broker1_sslkey_creds
-      KAFKA_SSL_TRUSTSTORE_FILENAME: ssl-cluster-bridged-server-truststore.jks
+      KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.broker1.truststore.jks
       KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker1_truststore_creds
-      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/ssl-cluster-bridged-server-truststore.jks
+      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/kafka.broker1.truststore.jks
       KAFKA_SSL_TRUSTSTORE_PASSWORD: confluent
       KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
-      CLIENT_KAFKA_SSL_TRUSTSTORE_FILENAME: ssl-cluster-bridged-client-trustore.jks
-      CLIENT_KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker1_truststore_creds
       CERT_VALIDITY_DAYS: 90
     volumes:
       - ./secrets:/etc/kafka/secrets
@@ -110,25 +108,23 @@ services:
     networks:
       - default
       - zk
-    command: [/etc/kafka/secrets/create-certs-cluster-ssl-config.sh]
+    # command: [/etc/kafka/secrets/create-certs-cluster-ssl-config.sh]
     environment:
       MASTER_SSL: "0"
       KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181/ssl
       KAFKA_ADVERTISED_LISTENERS: SSL://kafka-ssl-2:9093
-      KAFKA_SSL_KEYSTORE_FILENAME: ssl-cluster-bridged-keystore-2.jks
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker2.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: broker2_keystore_creds
       KAFKA_SSL_KEY_CREDENTIALS: broker2_sslkey_creds
-      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/ssl-cluster-bridged-keystore-2.jks
+      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka.broker2.keystore.jks
       KAFKA_SSL_KEYSTORE_PASSWORD: confluent
-      KAFKA_SSL_TRUSTSTORE_FILENAME: ssl-cluster-bridged-server-truststore.jks
+      KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.broker2.truststore.jks
       KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker2_truststore_creds
-      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/ssl-cluster-bridged-server-truststore.jks
+      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/kafka.broker2.truststore.jks
       KAFKA_SSL_TRUSTSTORE_PASSWORD: confluent
       KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
-      CLIENT_KAFKA_SSL_TRUSTSTORE_FILENAME: ssl-cluster-bridged-client-trustore.jks
-      CLIENT_KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker2_truststore_creds
       CERT_VALIDITY_DAYS: 90
     volumes:
       - ./secrets:/etc/kafka/secrets
@@ -140,27 +136,34 @@ services:
     networks:
       - default
       - zk
-    command: [/etc/kafka/secrets/create-certs-cluster-ssl-config.sh]
+    # command: [/etc/kafka/secrets/create-certs-cluster-ssl-config.sh]
     environment:
       KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
       KAFKA_BROKER_ID: 3
       MASTER_SSL: "0"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181/ssl
       KAFKA_ADVERTISED_LISTENERS: SSL://kafka-ssl-3:9093
-      KAFKA_SSL_KEYSTORE_FILENAME: ssl-cluster-bridged-keystore-3.jks
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker3.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: broker3_keystore_creds
       KAFKA_SSL_KEY_CREDENTIALS: broker3_sslkey_creds
-      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/ssl-cluster-bridged-keystore-3.jks
+      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka.broker3.keystore.jks
       KAFKA_SSL_KEYSTORE_PASSWORD: confluent
-      KAFKA_SSL_TRUSTSTORE_FILENAME: ssl-cluster-bridged-server-truststore.jks
+      KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.broker3.truststore.jks
       KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker3_truststore_creds
-      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/ssl-cluster-bridged-server-truststore.jks
+      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/kafka.broker3.truststore.jks
       KAFKA_SSL_TRUSTSTORE_PASSWORD: confluent
       KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
-      CLIENT_KAFKA_SSL_TRUSTSTORE_FILENAME: ssl-cluster-bridged-client-trustore.jks
-      CLIENT_KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker3_truststore_creds
       CERT_VALIDITY_DAYS: 90
     volumes:
       - ./secrets:/etc/kafka/secrets
     labels:
       - io.confluent.docker.testing=true
+
+  kafkacat-ssl:
+    image: localhost:5000/jackcviers/cp-kafkacat:7.0.0
+    networks:
+      - default
+      - zk
+    command: [/etc/kafka/secrets/tailNull.sh]
+    volumes:
+      - ./secrets:/etc/kafka/secrets

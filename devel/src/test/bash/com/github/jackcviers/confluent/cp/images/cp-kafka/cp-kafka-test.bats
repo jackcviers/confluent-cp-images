@@ -88,32 +88,32 @@ teardown_file(){
 
 @test "/var/lib/kafka should have 776 permissions" {
     run unbuffer ${BATS_BUILD_TOOL} exec -it cp-kafka-test-${ARCH} ls -al /var/lib/kafka
-    assert_output --partial "drwxrwxrw-"
+    assert_output --partial "drwxrwxrwx"
 }
 
 @test "/etc/kafka should have 776 permissions" {
     run unbuffer ${BATS_BUILD_TOOL} exec -it cp-kafka-test-${ARCH} ls -al /etc/kafka
-    assert_output --partial "drwxrwxrw-"
+    assert_output --partial "drwxrwxrwx"
 }
 
 @test "/var/log/kafka should have 776 permissions" {
     run unbuffer ${BATS_BUILD_TOOL} exec -it cp-kafka-test-${ARCH} ls -al /var/log/kafka
-    assert_output --partial "drwxrwxrw-"
+    assert_output --partial "drwxrwxrwx"
 }
 
 @test "/var/log/confluent should have 776 permissions" {
     run unbuffer ${BATS_BUILD_TOOL} exec -it cp-kafka-test-${ARCH} ls -al /var/log/confluent
-    assert_output --partial "drwxrwxrw-"
+    assert_output --partial "drwxrwxrwx"
 }
 
-@test "/var/lib/zookeeper should have 776 permissions" {
+@test "/var/lib/zookeeper should have 777 permissions" {
     run unbuffer ${BATS_BUILD_TOOL} exec -it cp-kafka-test-${ARCH} ls -al /var/lib/zookeeper
-    assert_output --partial "drwxrwxrw-"
+    assert_output --partial "drwxrwxrwx"
 }
 
-@test "/var/run/krb5 should have 776 permissions" {
+@test "/var/run/krb5 should have 777 permissions" {
     run unbuffer ${BATS_BUILD_TOOL} exec -it cp-kafka-test-${ARCH} ls -al /var/run/krb5
-    assert_output --partial "drwxrwxrw-"
+    assert_output --partial "drwxrwxrwx"
 }
 
 @test "/etc/confluent/docker/configure should exist owned by appuser:appuser" {

@@ -53,6 +53,16 @@ generate_ssl(){
 		-subj "/C=US/ST=IA/O=Github Jackcviers/CN=${fqdn}" \
 		-passin pass:${truststore_credentials}
 
+	#kafkacat
+	openssl genrsa -des3 -passout "pass:confluent" \
+		-out kafkacat.client.key 1024
+	openssl req -passin "pass:confluent" -passout "pass:confluent" \
+		-key kafkacat.client.key -new -out kafkacat.client.req \
+		-subj '/CN=kafkacat.kafka-ssl-1'
+	openssl x509 -req -CA ${ca_cert_file} -CAkey ${ca_key_file} \
+		-in kafkacat.client.req -out kafkacat-ca1-signed.pem \
+		-days 9999 -CAcreateserial -passin "pass:confluent"
+
 	keytool \
 	    -keystore ${cluster_truststore} -delete -alias CARoot \
 	    -storepass ${truststore_credentials} \

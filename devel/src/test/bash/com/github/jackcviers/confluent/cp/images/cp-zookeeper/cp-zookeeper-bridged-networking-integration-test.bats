@@ -29,6 +29,7 @@ setup_file(){
     kadmin_keytab_create zkclient zookeeper-sasl-1 zkclient-bridged-1
     kadmin_keytab_create zkclient zookeeper-sasl-2 zkclient-bridged-2
     kadmin_keytab_create zkclient zookeeper-sasl-3 zkclient-bridged-3
+    sleep 30
     assert_success
 }
 
@@ -41,11 +42,11 @@ teardown_file(){
     assert_output --partial "PASS"
 }
 @test "zookeeper-2 should be healthy" {
-    run health_check zookeeper-1 2181 zookeeper-2
+    run health_check zookeeper-2 2181 zookeeper-2
     assert_output --partial "PASS"
 }
 @test "zookeeper-3 should be healthy" {
-    run health_check zookeeper-1 2181 zookeeper-3
+    run health_check zookeeper-3 2181 zookeeper-3
     assert_output --partial "PASS"
 }
 
