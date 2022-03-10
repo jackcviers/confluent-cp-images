@@ -71,3 +71,8 @@ teardown_file(){
     assert_output --partial "{\"id\":3,\"name\":\"kafka-ssl-3:9093\"}"
 }
 
+@test "the kafka producer should produce 100 messages" {
+    run execute_on_service kafka-producer-ssl bash -c 'kafka-topics --create --topic foo --partitions 1 --replication-factor 3 --if-not-exists && seq 100 | kafka-console-producer --broker-list kafka-ssl-1:9093 --topic foo --producer.config /etc/kafka/secrets/bridged.producer.ssl.config && seq 100 | kafka-console-producer --broker-list kafka-ssl-1:9093 --topic foo --producer.config /etc/kafka/secrets/bridged.producer.ssl.config && echo "PRODUCED 100 messages."'
+    assert_output --partial "PRODUCED 100 messages."
+}
+

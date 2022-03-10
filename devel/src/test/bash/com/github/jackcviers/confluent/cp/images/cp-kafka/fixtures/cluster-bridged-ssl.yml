@@ -167,3 +167,16 @@ services:
     command: [/etc/kafka/secrets/tailNull.sh]
     volumes:
       - ./secrets:/etc/kafka/secrets
+
+  kafka-producer-ssl:
+    image: localhost:5000/jackcviers/cp-kafka:7.0.0
+    networks:
+      - default
+      - zk
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181/ssl"
+    command: [/etc/kafka/secrets/tailNull.sh]
+    volumes:
+      - ./secrets:/etc/kafka/secrets
+    labels:
+      - io.confluent.docker.testing=true
