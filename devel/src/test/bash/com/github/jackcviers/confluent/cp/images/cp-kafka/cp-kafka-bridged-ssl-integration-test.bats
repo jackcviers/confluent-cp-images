@@ -75,3 +75,11 @@ teardown_file(){
     assert_output --partial "PRODUCED 100 messages."
 }
 
+@test "kafkakat should consume 10 messages from the cluster" {
+    run execute_on_service kafkacat-ssl bash -c 'kafkacat -X ssl.endpoint.identification.algorithm=NONE -X security.protocol=ssl -X ssl.ca.location=/etc/kafka/secrets/snakeoil-ca-1.crt -X ssl.certificate.location=/etc/kafka/secrets/kafkacat-ca1-signed.pem -X ssl.key.location=/etc/kafka/secrets/kafkacat.client.key -X ssl.key.password=confluent -b kafka-ssl-1:9093,kafka-ssl-2:9093,kafka-ssl-3:9093 -C -t foo -c 10'
+    for i in `seq 10`
+    do
+	assert_output --partial "$i"
+    done
+}
+
