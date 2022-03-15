@@ -104,6 +104,7 @@ CP_KAFKA_STANDALONE_CONFIG_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/g
 CP_KAFKA_STANDALONE_NETWORKING_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-standalone-networking-integration-test.bats
 CP_KAFKA_BRIDGED_PLAIN_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-bridged-plain-integration-test.bats
 CP_KAFKA_BRIDGED_SSL_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-bridged-ssl-integration-test.bats
+CP_KAFKA_BRIDGED_SSL_SASL_INTEGRATION_TEST_LOCATION=./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/${CP_KAFKA_COMPONENT}/${CP_KAFKA_COMPONENT}-bridged-ssl-sasl-integration-test.bats
 CP_KAFKA_IMAGE = jackcviers/${CP_KAFKA_COMPONENT}
 CP_KAFKA_VERSION_TAG = jackcviers/${CP_KAFKA_COMPONENT}:${VERSION}
 CP_KAFKA_LATEST_TAG = jackcviers/${CP_KAFKA_COMPONENT}:${LATEST}
@@ -318,8 +319,19 @@ test-cp-kafka-bridged-ssl:
 	KAFKACAT_IMAGE=${LOCAL_CP_KAFKACAT_IMAGE} \
 	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKA_BRIDGED_SSL_INTEGRATION_TEST_LOCATION}
 
+.PHONY: test-cp-kafka-bridged-ssl-sasl
+test-cp-kafka-bridged-ssl-sasl:
+	echo "test-cp-kafka-bridged-ssl..."
+	BATS_LIBS_INSTALL_LOCATION=${BATS_LIBS_INSTALL_LOCATION} \
+	BATS_COMPOSE_TOOL=${IMAGES_COMPOSE_TOOL} \
+	BATS_BUILD_TOOL=${IMAGES_BUILD_TOOL} \
+	BATS_IMAGE=${LOCAL_CP_KAFKA_IMAGE} \
+	JMX_IMAGE=${LOCAL_CP_JMXTERM_IMAGE} \
+	KAFKACAT_IMAGE=${LOCAL_CP_KAFKACAT_IMAGE} \
+	${TIME_COMMAND} ${BATS_COMMAND} ${CP_KAFKA_BRIDGED_SSL_SASL_INTEGRATION_TEST_LOCATION}
+
 .PHONY: test-cp-kafka
-test-cp-kafka: test-cp-kafka-amd64 test-cp-kafka-arm64 test-cp-kafka-standalone-config test-cp-kafka-standalone-networking test-cp-kafka-bridged-plain test-cp-kafka-bridged-ssl
+test-cp-kafka: test-cp-kafka-amd64 test-cp-kafka-arm64 test-cp-kafka-standalone-config test-cp-kafka-standalone-networking test-cp-kafka-bridged-plain test-cp-kafka-bridged-ssl test-cp-kafka-bridged-ssl-sasl
 
 .PHONY: test-cp-kerberos-arm64
 test-cp-kerberos-arm64:
