@@ -22,7 +22,6 @@ COMPOSE_FILE="./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp
 source ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/compose/helpers.sh
 
 setup_file(){
-    # uncomment these when the cert expires
     cd ./devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/
     ./create-certs.sh
     cd -
@@ -72,7 +71,7 @@ teardown_file(){
 }
 
 @test "the kafka producer should produce 100 messages" {
-    run execute_on_service kafka-producer-ssl bash -c 'kafka-topics --create --topic foo --partitions 1 --replication-factor 3 --if-not-exists && seq 100 | kafka-console-producer --broker-list kafka-ssl-1:9093 --topic foo --producer.config /etc/kafka/secrets/bridged.producer.ssl.config && seq 100 | kafka-console-producer --broker-list kafka-ssl-1:9093 --topic foo --producer.config /etc/kafka/secrets/bridged.producer.ssl.config && echo "PRODUCED 100 messages."'
+    run execute_on_service kafka-producer-ssl bash -c 'kafka-topics --command-config /etc/kafka/secrets/bridged.producer.ssl.config --bootstrap-server kafka-ssl-1:9093,kafka-ssl-2:9093,kafka-ssl-3:9093 --create --topic foo --partitions 1 --replication-factor 3 --if-not-exists && seq 100 | kafka-console-producer --bootstrap-server kafka-ssl-1:9093,kafka-ssl-2:9093,kafka-ssl-3:9093 --topic foo --producer.config /etc/kafka/secrets/bridged.producer.ssl.config && seq 100 | kafka-console-producer --bootstrap-server kafka-ssl-1:9093,kafka-ssl-2:9093,kafka-ssl-3:9093 --topic foo --producer.config /etc/kafka/secrets/bridged.producer.ssl.config && echo "PRODUCED 100 messages."'
     assert_output --partial "PRODUCED 100 messages."
 }
 
