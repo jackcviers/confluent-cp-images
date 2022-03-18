@@ -54,3 +54,17 @@ buildNumber.properties
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/producer-ca1-signed.crt
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/snakeoil-ca-1.crt
 /devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/snakeoil-ca-1.key
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.ssl-sasl-consumer.keystore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.ssl-sasl-consumer.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.ssl-sasl-producer.keystore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/kafka.ssl-sasl-producer.truststore.jks
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-consumer-ca1-signed.crt
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-consumer.csr
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-consumer_keystore_creds
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-consumer_sslkey_creds
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-consumer_truststore_creds
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-producer-ca1-signed.crt
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-producer.csr
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-producer_keystore_creds
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-producer_sslkey_creds
+/devel/src/test/bash/com/github/jackcviers/confluent/cp/images/cp-kafka/fixtures/secrets/ssl-sasl-producer_truststore_creds

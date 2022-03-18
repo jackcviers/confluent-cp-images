@@ -16,7 +16,7 @@ openssl x509 -req -sha256 -CA snakeoil-ca-1.crt -CAkey snakeoil-ca-1.key -in kaf
 
 
 
-for i in broker1 broker2 broker3 producer consumer
+for i in broker1 broker2 broker3 producer consumer "ssl-sasl-producer" "ssl-sasl-consumer"
 do
 	echo $i
 	# Create keystores
